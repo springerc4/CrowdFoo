@@ -3,40 +3,17 @@
     require_once('authentication.php');
 
     session_start();
-    if ($_SESSION['logged'] == "true") {
-        //header('Location: index.php');
+    if (!isset($_SESSION['logged'])) {
+        $_SESSION['logged'] = 'false';
     }
+
 
     if (count($_POST) > 0) {
         if ($_GET['action'] == 'register') {
-            if (!isset($_POST['email'])) {
-                echo '<div class="alert alert-warning" role="alert">Please Enter an Email Address.</div>';
-            }
-            else if (!isset($_POST['password'])) {
-                echo '<div class="alert alert-warning" role="alert">Please Enter a Password</div>';
-            }
-            else if (!isset($_POST['firstname'])) {
-                echo '<div class="alert alert-warning" role="alert">Please Enter your First Name</div>';
-            }
-            else if (!isset($_POST['lastname'])) {
-                echo '<div class="alert alert-warning" role="alert">Please Enter your Last Name</div>';
-            }
-            else {
-                signup($db, $_POST['email'], $_POST['password'], $_POST['firstname'], $_POST['lastname']);
-            }
+            signup($db, $_POST['email'], $_POST['password'], $_POST['firstname'], $_POST['lastname']);
         }
         else if ($_GET['action'] == 'login') {
-            if (!isset($_POST['email'])) {
-                echo '<div class="alert alert-warning" role="alert">Please Enter an Email Address.</div>';
-                die();
-            }
-            else if (!isset($_POST['password'])) {
-                echo '<div class="alert alert-warning" role="alert">Please Enter a Password</div>';
-                die();
-            }
-            else {
-                signin($db, $_POST['email'], $_POST['password']);
-            }
+            signin($db, $_POST['email'], $_POST['password']);
         }
         else {
             signout();
