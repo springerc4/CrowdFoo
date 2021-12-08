@@ -1,3 +1,12 @@
+<?php
+    session_start();
+    if (!isset($_SESSION['logged'])) {
+        $_SESSION['logged'] = 'false';
+    }
+?>
+
+
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -19,19 +28,19 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="signin.php">Sign In</a>
+            <a class="nav-link" aria-current="page" href="signin.php">Sign In</a>
             </li>
             <li class="nav-item">
             <a class="nav-link" href="signup.php">Sign Up</a>
             </li>
             <?php
-                if ($_SESSION['logged']) {
+                //if ($_SESSION['logged']) {
             ?>
                     <li class="nav-item">
                     <a class="nav-link" href="signout.php">Sign Out</a>
                     </li>
-            <?=
-                }
+            <?php
+                //}
 
             ?>
         </ul>

@@ -1,18 +1,18 @@
 <?php
 require_once('settings.php');
 require_once('sqlfunctions.php');
+require_once('signup.php');
 
-function signup($email, $password, $first_name, $last_name) {
+function signup($db, $email, $password, $first_name, $last_name) {
 	
 	if(!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-		return 'Error: Invalid Email or Password';
+		echo '<div class="alert alert-warning" role="alert">Please Enter a Valid Email Address</div>';
 	}
 	else if(strlen($password) < 8 || strlen($password) > 16) {
-		return 'Invalid: Password must be between 8 and 16 characters';
+		echo '<div class="alert alert-warning" role="alert">Password Must Be Between 8 and 16 Characters</div>';
 	}
 	else if (contains($db, $email)) {
-		echo 'Email already registered';
-		return '<a href="signin.php">Sign in?</a>';
+		echo '<div class="alert alert-warning" role="alert">Email Already Registered.</div>';
 	}
 	else {
 		$query = $db->prepare('INSERT INTO users (email, user_password, first_name, last_name) VALUES (:email, :pass, :fname, :lname) ');
@@ -22,31 +22,28 @@ function signup($email, $password, $first_name, $last_name) {
 		$query->bindParam(':lname', $last_name);
 		$query->execute();
 		$_SESSION['logged'] = "true";
+		echo '<div class="alert alert-success" role="alert">You are Officially Registered!</div>';
 	}
 	
 }
 
-function signin($email, $password) {
+function signin($db, $email, $password) {
 	
-	if (!isset($_POST['email']) || !isset($_POST['password'])) {
-		echo 'Email or Password is Invalid';
-		return false;
-	}
-	else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-		echo 'Email or Password is Invalid';
-		return false;
+	if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+		echo '<div class="alert alert-warning" role="alert">Please Enter a Valid Email Address</div>';
 	}
 	else if (!contains($db, $email, $password)) {
-		return false;
+		echo '<div class="alert alert-warning" role="alert">Account Not Found</div>';
 	}
 	else {
 		$_SESSION['logged'] = 'true';
-		return true;
+		echo '<div class="alert alert-success" role="alert">Welcome Back!</div>';
 	}
 }
 
 function signout() {
 	$_SESSION['logged'] = "false";
+	echo '<div class="alert alert-success" role="alert">See Ya Next Time!</div>';
 	session_destroy();
-	header('Location: index.php');
+
 }
