@@ -1,6 +1,5 @@
 <?php
 require_once('settings.php');
-require_once('authentication.php');
 
 function contains($db, $email, $password = null) {
     $query = $db->prepare('SELECT * FROM users WHERE email = ?');
@@ -17,4 +16,23 @@ function contains($db, $email, $password = null) {
     else {
         return false;
     }
+}
+
+function deleteAccount($db, $user_id) {
+    $query = $db->prepare('DELETE FROM users WHERE user_ID = ?');
+    $query->execute([$user_id]);
+    $_SESSION['logged'] = 'false';
+}
+
+function modifyAccount($db, $email, $password, $fname, $lname, $admin) {
+   
+}
+
+function setDefaultSession() {
+    $_SESSION['email'] = null;
+    $_SESSION['admin'] = 0;
+    $_SESSION['password'] = null;
+    $_SESSION['firstname'] = null;
+    $_SESSION['lastname'] = null;
+    $_SESSION['userID'] = 0;
 }
