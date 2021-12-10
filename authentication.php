@@ -48,6 +48,7 @@ class UserAuth {
 			$_SESSION['password'] = $idRow['user_password'];
 			$_SESSION['firstname'] = $idRow['first_name'];
 			$_SESSION['lastname'] = $idRow['last_name'];
+			$_SESSION['admin'] = 0;
 			echo '<div class="alert alert-success" role="alert">You are Officially Registered! <a href="index.php">Return to Index</a></div>';
 		}
 		
@@ -64,13 +65,14 @@ class UserAuth {
 		else {
 			$_SESSION['logged'] = 'true';
 			$_SESSION['email'] = $email;
-			$idQuery = $this->db->prepare('SELECT user_ID, user_password, first_name, last_name FROM users WHERE email = ?');
+			$idQuery = $this->db->prepare('SELECT user_ID, user_password, first_name, last_name, isAdmin FROM users WHERE email = ?');
 			$idQuery->execute([$_SESSION['email']]);
 			$idRow = $idQuery->fetch();
 			$_SESSION['userID'] = $idRow['user_ID'];
 			$_SESSION['password'] = $idRow['user_password'];
 			$_SESSION['firstname'] = $idRow['first_name'];
 			$_SESSION['lastname'] = $idRow['last_name'];
+			$_SESSION['admin'] = $idRow['isAdmin'];
 			echo '<div class="alert alert-success" role="alert">Welcome Back! <a href="index.php">Return to Index</a></div>';
 		}
 	}

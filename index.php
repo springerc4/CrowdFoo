@@ -78,18 +78,23 @@
             </div>
         </div>
     </nav>
-    
-    <div class="container" style="margin-top: 5%; margin-left: 0%;">
-        <ul class="nav flex-column">
-            <li class="nav-item">
-                <button type="button" class="btn btn-info"><a href="create.php?entity=category" style="text-decoration: none; color: white;">Create Category</a></button>
-            </li>
-            <br><br>
-            <li class="nav-item">
-                <button type="button" class="btn btn-info"><a href="create.php?entity=project" style="text-decoration: none; color: white;">Create Project</a></button>
-            </li>
-        </ul>
-    </div>
+    <?php
+    if ($_SESSION['logged'] == 'true' && $_SESSION['admin'] == 1) {
+    ?>
+        <div class="container" style="margin-top: 5%; margin-left: 0%;">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <button type="button" class="btn btn-info"><a href="create.php?entity=category" style="text-decoration: none; color: white;">Create Category</a></button>
+                </li>
+                <br><br>
+                <li class="nav-item">
+                    <button type="button" class="btn btn-info"><a href="create.php?entity=project" style="text-decoration: none; color: white;">Create Project</a></button>
+                </li>
+            </ul>
+        </div>
+    <?php
+        }
+    ?>
     
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
