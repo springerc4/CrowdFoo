@@ -3,8 +3,10 @@
     require_once('sqlfunctions.php');
     session_start();
 
+    $delete_sql = new SqlOperation($db);
+
     if (isset($_POST['deleteaccount'])) {
-        deleteAccount($db, $_SESSION['userID']);
+        $delete_sql->deleteAccount($_SESSION['userID']);
         echo '<div class="alert alert-success" role="alert">Your Account has been Deleted. <a href="index.php">Return to Index</a></div>';
     }
 

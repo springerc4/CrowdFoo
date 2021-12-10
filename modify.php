@@ -3,8 +3,26 @@
     require_once('sqlfunctions.php');
     session_start();
 
+    $modify_sql = new SqlOperation($db);
+
     if (isset($_POST['modifyaccount'])) {
-        modifyAccount($db, $_POST['email'], $_POST['password'], $_POST['firstname'], $_POST['lastname'], isset($_POST['admin']));
+        if (!strlen($_POST['email']) > 0) {
+            $_POST['email'] = $_SESSION['email'];
+        }
+
+        if (!strlen($_POST['password']) > 0) {
+            $_POST['password'] = $_SESSION['password'];
+        }
+
+        if (!strlen($_POST['firstname']) > 0) {
+            $_POST['firstname'] = $_SESSION['firstname'];
+        }
+
+        if (!strlen($_POST['lastname']) > 0) {
+            $_POST['lastname'] = $_SESSION['lastname'];
+        }
+
+        $modify_sql->modifyAccount($_POST['email'], $_POST['password'], $_POST['firstname'], $_POST['lastname'], isset($_POST['admin']));
         echo '<div class="alert alert-success" role="alert">Your Account has been Modified. <a href="index.php">Return to Index</a></div>';
     }
 

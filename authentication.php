@@ -4,54 +4,84 @@ require_once('sqlfunctions.php');
 
 session_start();
 
-function signup($db, $email, $password, $first_name, $last_name) {
-	
-	if(!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-		echo '<div class="alert alert-warning" role="alert">Please Enter a Valid Email Address</div>';
+$auth_sql = new UserAuth($db);
+
+class UserAuth {
+
+	private $db = null;
+
+	private $sql_ops;
+
+	function __construct($db) {
+		$this->db = $db;
+		$this->sql_ops = new SqlOperation($db);
 	}
-	else if(strlen($password) < 8 || strlen($password) > 16) {
-		echo '<div class="alert alert-warning" role="alert">Password Must Be Between 8 and 16 Characters</div>';
+
+
+	public function signup($email, $password, $first_name, $last_name) {
+		
+		if(!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+			echo '<div class="alert alert-warning" role="alert">Please Enter a Valid Email Address</div>';
+		}
+		else if(strlen($password) < 8 || strlen($password) > 16) {
+			echo '<div class="alert alert-warning" role="alert">Password Must Be Between 8 and 16 Characters</div>';
+		}
+		else if (!strlen($first_name) > 0 || !strlen($last_name) > 0) {
+			echo '<div class="alert alert-warning" role="alert">Please Enter Your First and Last Name</div>';
+		}
+		else if ($this->sql_ops->contains($email)) {
+			echo '<div class="alert alert-warning" role="alert">Email Already Registered.</div>';
+		}
+		else {
+			$query = $this->db->prepare('INSERT INTO users (email, user_password, first_name, last_name) VALUES (:email, :pass, :fname, :lname) ');
+			$query->bindParam(':email', $email);
+			$query->bindParam(':pass', $password);
+			$query->bindParam(':fname', $first_name);
+			$query->bindParam(':lname', $last_name);
+			$query->execute();
+			$_SESSION['logged'] = "true";
+			$_SESSION['email'] = $email;
+			$idQuery = $this->db->prepare('SELECT user_password, first_name, last_name, user_ID FROM users WHERE email = ?');
+			$idQuery->execute([$_SESSION['email']]);
+			$idRow = $idQuery->fetch();
+			$_SESSION['userID'] = $idRow['user_ID'];
+			$_SESSION['password'] = $idRow['user_password'];
+			$_SESSION['firstname'] = $idRow['first_name'];
+			$_SESSION['lastname'] = $idRow['last_name'];
+			echo '<div class="alert alert-success" role="alert">You are Officially Registered! <a href="index.php">Return to Index</a></div>';
+		}
+		
 	}
-	else if (!strlen($first_name) > 0 || !strlen($last_name) > 0) {
-		echo '<div class="alert alert-warning" role="alert">Please Enter Your First and Last Name</div>';
+
+	public function signin($email, $password) {
+		
+		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+			echo '<div class="alert alert-warning" role="alert">Please Enter a Valid Email Address</div>';
+		}
+		else if (!$this->sql_ops->contains($email, $password) || !strlen($password) > 0) {
+			echo '<div class="alert alert-warning" role="alert">Account Not Found</div>';
+		}
+		else {
+			$_SESSION['logged'] = 'true';
+			$_SESSION['email'] = $email;
+			$idQuery = $this->db->prepare('SELECT user_ID, user_password, first_name, last_name FROM users WHERE email = ?');
+			$idQuery->execute([$_SESSION['email']]);
+			$idRow = $idQuery->fetch();
+			$_SESSION['userID'] = $idRow['user_ID'];
+			$_SESSION['password'] = $idRow['user_password'];
+			$_SESSION['firstname'] = $idRow['first_name'];
+			$_SESSION['lastname'] = $idRow['last_name'];
+			echo '<div class="alert alert-success" role="alert">Welcome Back! <a href="index.php">Return to Index</a></div>';
+		}
 	}
-	else if (contains($db, $email)) {
-		echo '<div class="alert alert-warning" role="alert">Email Already Registered.</div>';
+
+	public function signout() {
+		$_SESSION['logged'] = "false";
+		session_destroy();
 	}
-	else {
-		$query = $db->prepare('INSERT INTO users (email, user_password, first_name, last_name) VALUES (:email, :pass, :fname, :lname) ');
-		$query->bindParam(':email', $email);
-		$query->bindParam(':pass', $password);
-		$query->bindParam(':fname', $first_name);
-		$query->bindParam(':lname', $last_name);
-		$query->execute();
-		$_SESSION['logged'] = "true";
-		$_SESSION['email'] = $email;
-		echo '<div class="alert alert-success" role="alert">You are Officially Registered! <a href="index.php">Return to Index</a></div>';
-	}
-	
 }
 
-function signin($db, $email, $password) {
-	
-	if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-		echo '<div class="alert alert-warning" role="alert">Please Enter a Valid Email Address</div>';
-	}
-	else if (!contains($db, $email, $password) || !strlen($password) > 0) {
-		echo '<div class="alert alert-warning" role="alert">Account Not Found</div>';
-	}
-	else {
-		$_SESSION['logged'] = 'true';
-		$_SESSION['email'] = $email;
-		echo '<div class="alert alert-success" role="alert">Welcome Back! <a href="index.php">Return to Index</a></div>';
-	}
-}
 
-function signout() {
-	$_SESSION['logged'] = "false";
-	session_destroy();
-	
-}
 	if (count($_POST) > 0) {
 		if ($_GET['auth'] == "login") {
 			if (!isset($_POST['email'])) {
@@ -63,7 +93,7 @@ function signout() {
 				die();
 			}
 			else {
-				signin($db, $_POST['email'], $_POST['password']);
+				$auth_sql->signin($_POST['email'], $_POST['password']);
 			}
 		}
 		else if ($_GET['auth'] == "register") {
@@ -80,12 +110,12 @@ function signout() {
 				echo '<div class="alert alert-warning" role="alert">Please Enter your Last Name</div>';
 			}
 			else {
-				signup($db, $_POST['email'], $_POST['password'], $_POST['firstname'], $_POST['lastname']);
+				$auth_sql->signup($_POST['email'], $_POST['password'], $_POST['firstname'], $_POST['lastname']);
 			}
 		}
 		else {
 			if (isset($_POST['signout'])) {
-				signout();
+				$auth_sql->signout();
 				echo '<div class="alert alert-success" role="alert">See Ya Next Time! <a href="index.php">Return to Index</a></div>';
 			}
 		}
