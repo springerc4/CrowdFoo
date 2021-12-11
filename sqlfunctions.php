@@ -95,15 +95,11 @@ class SqlOperation {
     }
 
     public function createProject($name, $description, $goal, $category_name) {
-        if (!containsCategory($category_name)) {
-            echo '<div class="alert alert-warning" role="alert">This category does not exist. <a href="create.php?entity=category" style="text-decoration: none; color: white;>Create Category?</a></div>';
-        } else {
-            $categoryquery = $this->db->prepare('SELECT category_ID FROM categories WHERE category_name = ?');
-            $categoryquery->execute($category_name);
-            $category_row = $categoryquery->fetch();
-            $query = $this->db->prepare('INSERT INTO projects (project_name, project_description, number_of_backers, project_goal, category_ID) VALUES (?, ?, ?, ?, ?) ');
-            $query->execute([$name, $description, 0, $goal, $category_row['category_ID']]);
-        }
+        $categoryquery = $this->db->prepare('SELECT category_ID FROM categories WHERE category_name = ?');
+        $categoryquery->execute(array($category_name));
+        $category_row = $categoryquery->fetch();
+        $query = $this->db->prepare('INSERT INTO projects (project_name, project_description, number_of_backers, project_goal, category_ID) VALUES (?, ?, ?, ?, ?) ');
+        $query->execute([$name, $description, 0, $goal, $category_row['category_ID']]);
     }
 
 }
