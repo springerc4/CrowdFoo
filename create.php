@@ -10,11 +10,19 @@
     
     $create_sql = new SqlOperation($db);
 
+    $query = $db->prepare('SELECT * FROM projects ORDER BY project_ID DESC LIMIT 1');
+    $query->execute();
+    $projectID = ($query->fetch())['project_ID']+1;
+
     if (isset($_POST['name'])){
         $create_sql->createProject($_POST['name'],$_POST['description'],$_POST['goal'],$_POST['category']);
+        for($i=1; $i<4; $i++){
+            $create_sql->addReward($_POST['rewardName1'], $_POST['rewardPrice1'], $_POST['rewardDescription1'], $projectID);
+        }
         ?>
         <div class="alert alert-success">
             <strong>Success!</strong> Project Created.
+            <a href="index.php"></a>
         </div>
         <?php
     }
@@ -40,7 +48,10 @@
             </div>
             <div>
                 <label for="goals">Project goal amount:</label><br>
-                <input type="text" name="goal" id="goal" value="$">
+                <div class="input-group mb-3 w-25">
+                            <span class="input-group-text">$</span>
+                            <input type="text" class="form-control" name="goal" id="goal" aria-label="Amount (to the nearest dollar)">
+                        </div>
             </div>
             <div>
                 <label for="category">Choose appropiate catagory:</label><br>
@@ -53,6 +64,18 @@
                     <?php } ?>
                 </select>
             </div>
+            <?php 
+            for($i=1; $i<4; $i++){
+            ?>
+            <div class="row p-3">
+                reward name: 
+                <input  type="<?=$i?>" name="rewardName<?=$i?>" id="rewardName<?=$i?>">
+                reward description:
+                <textarea name="rewardName<?=$i?>" id="rewardName<?=$i?>" cols="30" rows="5"></textarea>
+                reward price
+                <input type="<?=$i?>" name="rewardName<?=$i?>" id="rewardName<?=$i?>">
+            </div>
+            <?php } ?>
             <button type="submit" class="btn btn-primary" style="margin-top: 2%;">Submit</button>
         </form>
     </div>
