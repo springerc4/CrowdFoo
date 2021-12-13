@@ -89,7 +89,7 @@
                     <p><?=$project['number_of_backers']?></p>
                 </div>
                 <div class="container">
-                    <h4>Goal:<?=$project['project_name']?></h4>
+                    <h4>Goal: $<?=$project['project_goal']?></h4>
                     <div class="progress w-50">
                         <div class="progress-bar progress-bar-striped progress-bar-animated" style="width:<?=$goalRatio?>%">$<?=$project['money_collected']?></div>
                     </div>
