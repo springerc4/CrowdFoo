@@ -4,11 +4,11 @@
     
     $project_sql = new SqlOperation($db);
 
-    //$_GET['id'] = $id
+    $id = $_GET['projectid'];
 
-    $project = $project_sql->getProject(0);
+    $project = $project_sql->getProject($id);
 
-    $rewards = $project_sql->getRewards(0);
+    $rewards = $project_sql->getRewards($id);
 
     $canPay = 'disabled';
     if ($_SESSION['logged']) {

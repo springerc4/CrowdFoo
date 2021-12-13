@@ -125,6 +125,11 @@ class SqlOperation {
         return $project_query->fetch();
     }
 
+    public function modifyProject($name, $description, $goal, $project_id) {
+        $modify_project = $this->db->prepare('UPDATE projects SET project_name = ?, project_description = ?, project_goal = ? WHERE project_ID = ?');
+        $modify_project->execute([$name, $description, $goal, $project_id]);
+    }
+
     public function accountInfo($account_id) {
         $account_query = $this->db->prepare('SELECT projects_supported, rewards_purchased, first_name, last_name, isAdmin, projects_managed, email FROM users WHERE user_ID = ?');
         $account_query->execute([$account_id]);
@@ -152,21 +157,6 @@ class SqlOperation {
     }
 
     public function modifyAddress($city, $state, $country, $zip, $user_ID) {
-        $select_address = $this->db->prepare('SELECT * FROM customeraddresses WHERE user_ID = ?');
-        $select_reward->execute([$user_id]);
-        $select_row = $select_reward->fetch();
-        if (!strlen($city) > 0) {
-            $city = $select_address['city'];
-        } 
-        if (!strlen($price) > 0) {
-            $state = $select_address['_state'];
-        }
-        if (!strlen($country) > 0) {
-            $country = $select_address['country'];
-        } 
-        if (!strlen($zip) > 0) {
-            $zip = $select_address['zipcode'];
-        } 
         $address_query = $this->db->prepare('UPDATE customeraddresses SET city = ?, _state = ?, country = ?, zipcode = ? WHERE user_ID = ?');
         $address_query->execute([$city, $state, $country, $zip, $user_ID]);
     }
@@ -220,6 +210,12 @@ class SqlOperation {
         $order_query = $this->db->prepare('INSERT INTO orders (date_ordered, date_fulfilled, user_ID, reward_ID, address_ID) VALUES (?, ?, ?, ?, ?)');
         $order_query->execute([$date_ordered, $date_fulfilled, $user_id, $project_id, $address_info['address_ID']]);
     }
+
+    public function updateAmounts($backers, $money_collected, $project_id) {
+        $amount_query = $this->db->prepare('UPDATE projects SET number_of_backers = ?, money_collected = ? WHERE project_ID = ?');
+        $amount_query->execute([$backers, $money_collected, $project_id]);
+    }
+
     public function getProject($id){
         $projectQuery = $this->db->prepare('SELECT * FROM projects WHERE project_ID = ?');
         $projectQuery->execute(array($id));

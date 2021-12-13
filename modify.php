@@ -5,6 +5,10 @@
 
     $modify_sql = new SqlOperation($db);
 
+    $project_id = $_GET['projectid'];
+
+    $project_info = $delete_sql->projectInfo($project_id);
+
     $address_info = $modify_sql->addressInfo($_SESSION['userID']);
 
     $reward_id = $_GET['rewardid'];
@@ -71,6 +75,23 @@
 
         $modify_sql->modifyReward($_POST['name'], $_POST['price'], $_POST['description'], $reward_id);
         echo '<div class="alert alert-success" role="alert">Reward has been Modified. <a href="index.php">Return to Index</a></div>';
+    }
+
+    if (isset($_POST['modifyproject'])) {
+        if (!strlen($_POST['projectname']) > 0) {
+            $_POST['projectname'] = $project_info['project_name'];
+        }
+
+        if (!strlen($_POST['projectdescription']) > 0) {
+            $_POST['projectdescription'] = $reward_row['project_description'];
+        }
+
+        if (!strlen($_POST['goal']) > 0) {
+            $_POST['goal'] = $_SESSION['project_goal'];
+        }
+
+        $modify_sql->modifyProject($_POST['name'], $_POST['price'], $_POST['goal'], $project_id);
+        echo '<div class="alert alert-success" role="alert">Project has been Modified. <a href="project.php?projectid='.$project_id.'">Return to Index</a></div>';
     }
 
 ?>
@@ -192,6 +213,34 @@
             </div>
         </div>
 
+<?php
+    } else if ($_GET['entity'] == "project") {
+?>
+        <h3 style="text-align: center; margin-top: 7%;">Modify Project</h3>
+        <div class="card" style="width: 40%; margin-left: 30%; margin-top: 3%;">
+            <div class="card-body">
+                <form method="post">
+                    <div class="mb-3">
+                        <label for="projectname" class="form-label">Project Name</label>
+                        <input type="text" class="form-control" id="projectname" name="projectname">
+                    </div>
+                    <div class="mb-3">
+                        <label for="projectdescription" class="form-label">Project Description</label>
+                        <input type="text" class="form-control" id="projectdescription" name="projectdescription">
+                    </div>
+                    <div class="mb-3">
+                        <label for="goal" class="form-label">Project Goal</label>
+                        <input type="text" class="form-control" id="goal" name="goal">
+                    </div>
+                    <br><br>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <a href="project.php?projectid=<?php $project_id ?>" style="text-decoration: none; color: white;">Cancel</a>
+                    </button>
+                    <button type="submit" class="btn btn-primary" name="modifyproject">Modify</button>
+                
+                </form>
+            </div>
+        </div>
 <?php
     } else {
         echo 'Page Not Found';
