@@ -89,8 +89,8 @@ class SqlOperation {
         }
     }
 
-    public function containsCategory($name) {
-        $query = $this->db->prepare('SELECT * FROM categories WHERE category_name = ?');
+    public static function containsCategory($name) {
+        $query = $db->prepare('SELECT * FROM categories WHERE category_name = ?');
         $query->execute([$name]);
         $row = $query->fetch();
         if ($row) {
@@ -220,4 +220,22 @@ class SqlOperation {
         $order_query = $this->db->prepare('INSERT INTO orders (date_ordered, date_fulfilled, user_ID, reward_ID, address_ID) VALUES (?, ?, ?, ?, ?)');
         $order_query->execute([$date_ordered, $date_fulfilled, $user_id, $project_id, $address_info['address_ID']]);
     }
+    public function getProject($id){
+        $projectQuery = $this->db->prepare('SELECT * FROM projects WHERE project_ID = ?');
+        $projectQuery->execute(array($id));
+        $projectArray = $projectQuery->fetch();
+        return $projectArray;
+    }
+
+    public function getRewards($projectID){
+        $rewardArray = array();
+        $query = $this->db->prepare('SELECT * FROM rewards WHERE project_ID = ?');
+        $query->execute(array($projectID));
+        while($reward = $query->fetch()){ 
+           array_push($rewardArray, $reward); 
+        }
+        return $rewardArray;
+        
+    }
+
 }

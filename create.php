@@ -6,19 +6,18 @@
     if (!isset($_SESSION['logged'])) {
         header('location: index.php');
     }
+    //is admin
     
     $create_sql = new SqlOperation($db);
 
     if (isset($_POST['name'])){
-        $create_sql->createProject($_POST['name'],$_POST['description'],$_POST['goals'],$_POST['category']);
+        $create_sql->createProject($_POST['name'],$_POST['description'],$_POST['goal'],$_POST['category']);
         ?>
         <div class="alert alert-success">
             <strong>Success!</strong> Project Created.
         </div>
         <?php
     }
-
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -40,8 +39,8 @@
                 <textarea name="description" id="description" cols="30" rows="5"></textarea>
             </div>
             <div>
-                <label for="goals">Project goals:</label><br>
-                <textarea name="goals" id="goals" cols="30" rows="5"></textarea>
+                <label for="goals">Project goal amount:</label><br>
+                <input type="text" name="goal" id="goal" value="$">
             </div>
             <div>
                 <label for="category">Choose appropiate catagory:</label><br>
