@@ -1,6 +1,7 @@
 <?php
     require_once('settings.php');
     require_once('sqlfunctions.php');
+    session_start();
     
     $project_sql = new SqlOperation($db);
 
@@ -15,6 +16,10 @@
         $canPay = null;
     }
 
+    $goalRatio = ($project['money_collected']/$project['project_goal'])*100;
+
+
+
 
 ?>
 <!DOCTYPE html>
@@ -27,6 +32,48 @@
 
 </head>
 <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.php">CrowdFoo</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <?php
+                        if ($_SESSION['logged'] == 'false') {
+                    ?>
+                    <li class="nav-item">
+                        <button type="button" class="btn btn-light">
+                            <a href="authentication.php?auth=login" style="text-decoration:none; color: black;">Sign In</a>
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button type="button" class="btn btn-light">
+                            <a href="authentication.php?auth=register" style="text-decoration:none; color: black;">Sign Up</a>
+                        </button>
+                    </li>
+                    <?php
+                        } else {
+                    ?>
+                            <li class="nav-item">
+                                <button type="button" class="btn btn-light">
+                                    <a href="authentication.php?auth=logout" style="text-decoration:none; color: black;">Sign Out</a>
+                                </button>
+                            </li>
+                            <li class="nav-item">
+                                <button type="button" class="btn btn-light">
+                                    <a href="account.php" style="text-decoration: none; color: black;">View Account</a>
+                                </button>
+                            </li>
+                    <?php
+                        }
+
+                    ?>
+                </ul>
+            </div>
+        </div>
+    </nav>
     <div class="container shadow-sm p-4 mb-4">
         <div class="container mb-5">
             <h1><?=$project['project_name']?></h1>
@@ -44,11 +91,25 @@
                 <div class="container">
                     <h4>Goal:<?=$project['project_name']?></h4>
                     <div class="progress w-50">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated" style="width:50%">$500</div>
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" style="width:<?=$goalRatio?>%">$<?=$project['money_collected']?></div>
                     </div>
                 </div>
                 <div class="container mt-5">
-                    <h3>Click one of the tier options to support this project!</h3>
+                    <h3>Contribute to this project:</h3>
+                    <form method='post'>
+                        <div class="input-group mb-3 w-25">
+                            <span class="input-group-text">$</span>
+                            <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)">
+                        </div>
+                        <div class="container">
+                            <button class="btn btn-primary m-3">
+                                Submit
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="container mt-5">
+                    <h3>Rewards you can gain based on your support!</h3>
                 </div>
                 <div class="container p-3">
                     <?php
@@ -58,8 +119,8 @@
                     ?>
                         <h5>tier <?=$i?>:</h5>
                         <h6>Reward:</h6>
-                        <button type="button" class="btn btn-outline-primary <?=$canPay?>" data-bs-toggle="modal" data-bs-target="#rewardDesc<?=$i?>"><?=$r['reward_name']?></button>
-                        <button class="btn btn-success m-3">
+                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#rewardDesc<?=$i?>"><?=$r['reward_name']?></button>
+                        <button class="btn btn-success m-3 disabled">
                             <span class="spinner-grow spinner-grow-sm"></span>
                             $<?=$r['reward_price']?>
                         </button>

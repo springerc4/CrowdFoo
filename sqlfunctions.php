@@ -89,8 +89,8 @@ class SqlOperation {
         }
     }
 
-    public static function containsCategory($name) {
-        $query = $db->prepare('SELECT * FROM categories WHERE category_name = ?');
+    public function containsCategory($name) {
+        $query = $this->db->prepare('SELECT * FROM categories WHERE category_name = ?');
         $query->execute([$name]);
         $row = $query->fetch();
         if ($row) {
