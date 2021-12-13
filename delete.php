@@ -9,11 +9,6 @@
 
     $project_info = $delete_sql->projectInfo($project_id);
 
-    $reward_id = $_GET['rewardid'];
-
-    $reward_row = $delete_sql->rewardInfo($reward_id);
-    $reward_project_id = $reward_row['project_ID'];
-
     if (isset($_POST['deleteaccount'])) {
         $delete_sql->deleteAccount($_SESSION['userID']);
         echo '<div class="alert alert-success" role="alert">Your Account has been Deleted. <a href="index.php">Return to Index</a></div>';
@@ -25,6 +20,10 @@
     }
 
     if (isset($_POST['deletereward'])) {
+        $reward_id = $_GET['rewardid'];
+        $reward_row = $delete_sql->rewardInfo($reward_id);
+        $reward_project_id = $reward_row['project_ID'];
+
         $delete_sql->deleteReward($reward_id);
         echo '<div class="alert alert-success" role="alert">Reward has been Deleted. <a href="project.php?projectid='.$reward_project_id.'">Return to Project</a></div>';
     }
@@ -100,7 +99,7 @@
 					<button type="button" class="btn btn-secondary">
 						<a href="project.php?projectid=<?php $project_id ?>" style="text-decoration: none; color: white;">Cancel</a>
 					</button>
-					<button type="submit" class="btn btn-primary" name="deletereward">Delete</button>
+					<button type="submit" class="btn btn-primary" name="deleteproject">Delete</button>
 				</div>
 			</form>
 		</div>
@@ -108,4 +107,5 @@
     <?php
         } else {
             echo 'Page not found.';
+        }
     ?>
