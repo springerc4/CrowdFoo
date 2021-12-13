@@ -74,8 +74,8 @@ class SqlOperation {
         }
     }
 
-    public function containsCategory($name) {
-        $query = $this->db->prepare('SELECT * FROM categories WHERE category_name = ?');
+    public static function containsCategory($name) {
+        $query = $db->prepare('SELECT * FROM categories WHERE category_name = ?');
         $query->execute([$name]);
         $row = $query->fetch();
         if ($row) {
@@ -100,6 +100,24 @@ class SqlOperation {
         $category_row = $categoryquery->fetch();
         $query = $this->db->prepare('INSERT INTO projects (project_name, project_description, number_of_backers, project_goal, category_ID) VALUES (?, ?, ?, ?, ?) ');
         $query->execute([$name, $description, 0, $goal, $category_row['category_ID']]);
+    }
+
+    public function getProject($id){
+        $projectQuery = $this->db->prepare('SELECT * FROM projects WHERE project_ID = ?');
+        $projectQuery->execute(array($id));
+        $projectArray = $projectQuery->fetch();
+        return $projectArray;
+    }
+
+    public function getRewards($projectID){
+        $rewardArray = array();
+        $query = $this->db->prepare('SELECT * FROM rewards WHERE project_ID = ?');
+        $query->execute(array($projectID));
+        while($reward = $query->fetch()){ 
+           array_push($rewardArray, $reward); 
+        }
+        return $rewardArray;
+        
     }
 
 }
