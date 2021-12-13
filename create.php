@@ -4,7 +4,7 @@
     session_start();
 
     if (!isset($_SESSION['logged'])) {
-        header('index.php');
+        header('location: index.php');
     }
     
     $create_sql = new SqlOperation($db);

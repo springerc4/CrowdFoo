@@ -5,12 +5,35 @@
 
     $delete_sql = new SqlOperation($db);
 
+    $project_id = $_GET['projectid'];
+
+    $project_info = $delete_sql->projectInfo($project_id);
+
+    $reward_id = $_GET['rewardid'];
+
+    $reward_row = $delete_sql->rewardInfo($reward_id);
+    $reward_project_id = $reward_row['project_ID'];
+
     if (isset($_POST['deleteaccount'])) {
         $delete_sql->deleteAccount($_SESSION['userID']);
         echo '<div class="alert alert-success" role="alert">Your Account has been Deleted. <a href="index.php">Return to Index</a></div>';
     }
 
-    if ($_GET['entity'] == "account") {
+    if (isset($_POST['deleteaddress'])) {
+        $delete_sql->deleteAddress($_SESSION['userID']);
+        echo '<div class="alert alert-success" role="alert">Your Address has been Deleted. <a href="index.php">Return to Index</a></div>';
+    }
+
+    if (isset($_POST['deletereward'])) {
+        $delete_sql->deleteReward($reward_id);
+        echo '<div class="alert alert-success" role="alert">Reward has been Deleted. <a href="project.php?projectid='.$reward_project_id.'">Return to Project</a></div>';
+    }
+
+    if (isset($_POST['deleteproject'])) {
+        $delete_sql->deleteProject($project_id);
+        echo '<div class="alert alert-success" role="alert">Project has been Deleted. <a href="index.php">Return to Index</a></div>';
+    }
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -20,6 +43,9 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
         <title>Delete</title>
     </head>
+    <?php
+        if ($_GET['entity'] == "account") {
+    ?>
     <body>
         <div class="card" style="width: 30%;">
 			<form method="post">
@@ -27,12 +53,59 @@
 					<h5 class="card-title">Deleting Your Account?</h5>
 					<p class="card-text">Are you sure you want to delete your account?</p>
 					<button type="button" class="btn btn-secondary">
-						<a href="index.php" style="text-decoration: none; color: white;">Cancel</a>
+						<a href="account.php" style="text-decoration: none; color: white;">Cancel</a>
 					</button>
 					<button type="submit" class="btn btn-primary" name="deleteaccount">Delete</button>
 				</div>
 			</form>
 		</div>
     <?php
-        } 
+        } else if ($_GET['entity'] == "address") {
+    ?>
+        <div class="card" style="width: 30%;">
+			<form method="post">
+				<div class="card-body">
+					<h5 class="card-title">Deleting Your Shipping Address?</h5>
+					<p class="card-text">Are you sure you want to delete this address?</p>
+					<button type="button" class="btn btn-secondary">
+						<a href="account.php" style="text-decoration: none; color: white;">Cancel</a>
+					</button>
+					<button type="submit" class="btn btn-primary" name="deleteaddress">Delete</button>
+				</div>
+			</form>
+		</div>
+    <?php
+        } else if ($_GET['entity'] == "reward") {
+    ?>
+        <div class="card" style="width: 30%;">
+			<form method="post">
+				<div class="card-body">
+					<h5 class="card-title">Deleting Your Shipping Address?</h5>
+					<p class="card-text">Are you sure you want to delete this address?</p>
+					<button type="button" class="btn btn-secondary">
+						<a href="project.php?projectid=<?php $reward_project_id ?>" style="text-decoration: none; color: white;">Cancel</a>
+					</button>
+					<button type="submit" class="btn btn-primary" name="deletereward">Delete</button>
+				</div>
+			</form>
+		</div>
+    <?php
+        } else if ($_GET['entity'] == "project") {
+    ?>
+        <div class="card" style="width: 30%;">
+			<form method="post">
+				<div class="card-body">
+					<h5 class="card-title">Deleting Your Project?</h5>
+					<p class="card-text">Are you sure you want to delete <?php $project_info['project_name'] ?>?</p>
+					<button type="button" class="btn btn-secondary">
+						<a href="project.php?projectid=<?php $project_id ?>" style="text-decoration: none; color: white;">Cancel</a>
+					</button>
+					<button type="submit" class="btn btn-primary" name="deletereward">Delete</button>
+				</div>
+			</form>
+		</div>
+
+    <?php
+        } else {
+            echo 'Page not found.';
     ?>

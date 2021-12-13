@@ -58,12 +58,7 @@
                             </li>
                             <li class="nav-item">
                                 <button type="button" class="btn btn-light">
-                                    <a href="delete.php?entity=account" style="text-decoration: none; color: black;">Delete Account</a>
-                                </button>
-                            </li>
-                            <li class="nav-item">
-                                <button type="button" class="btn btn-light">
-                                    <a href="modify.php?entity=account" style="text-decoration: none; color: black;">Modify Account</a>
+                                    <a href="account.php" style="text-decoration: none; color: black;">View Account</a>
                                 </button>
                             </li>
                     <?php
@@ -71,10 +66,6 @@
 
                     ?>
                 </ul>
-                <form class="d-flex">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                </form>
             </div>
         </div>
     </nav>
