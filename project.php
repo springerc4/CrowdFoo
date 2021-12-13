@@ -148,7 +148,7 @@
         </div>
     </div>
     <?php
-        if($_SESSION['isAdmin'] && $_SESSION['userID']==$project['user_ID']){
+        if($_SESSION['admin'] && $_SESSION['userID']==$project['user_ID']){
     ?>
     <div class="container p-3">
         <button type="button" class="btn btn-info"><a href="modify.php?entity=project&projectid=<?=$id?>" style="text-decoration: none; color: white;">Modify</a></button>

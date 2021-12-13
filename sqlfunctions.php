@@ -111,11 +111,15 @@ class SqlOperation {
     public function deleteProject($project_id) {
         $query_rewards = $this->db->prepare('SELECT reward_ID FROM rewards WHERE project_ID = ?');
         $query_rewards->execute([$project_id]);
-        $query_rewards_fetch = $query_rewards->fetch();
-        foreach ($query_rewards_fetch as $reward) {
-            deleteReward($reward);
+        //$query_rewards_fetch = $query_rewards->fetch();
+        while($query_rewards_fetch = $query_rewards->fetch()) {
+            $this->deleteReward($query_rewards_fetch['reward_ID']);
         }
-        $delete_project = $this->db->prepare('DELETE * FROM projects WHERE project_ID = ?');
+        //foreach ($query_rewards_fetch as $reward) {
+            //print_r($reward);
+            //$this->deleteReward($reward);
+        //}
+        $delete_project = $this->db->prepare('DELETE FROM projects WHERE project_ID = ?');
         $delete_project->execute([$project_id]);
     }
 
@@ -195,7 +199,7 @@ class SqlOperation {
     }
 
     public function deleteReward($reward_id) {
-        $delete_reward = $this->db_prepare('DELETE * FROM rewards WHERE reward_ID = ?');
+        $delete_reward = $this->db->prepare('DELETE FROM rewards WHERE reward_ID = ?');
         $delete_reward->execute([$reward_id]);
     }
 

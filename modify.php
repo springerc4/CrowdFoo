@@ -7,19 +7,11 @@
 
     $project_id = $_GET['projectid'];
 
-    $project_info = $delete_sql->projectInfo($project_id);
-
-    $address_info = $modify_sql->addressInfo($_SESSION['userID']);
-
-    $reward_id = $_GET['rewardid'];
-
-    $reward_row = $modify_sql->rewardInfo($_GET['rewardid']);
-    $reward_project_id = $reward_row['project_ID'];
-
-    
+    $project_info = $modify_sql->projectInfo($project_id);
 
 
     if (isset($_POST['modifyaddress'])) {
+        $address_info = $modify_sql->addressInfo($_SESSION['userID']);
         if (!strlen($_POST['email']) > 0) {
             $_POST['city'] = $address_info['city'];
         }
@@ -36,7 +28,7 @@
             $_POST['zipcode'] = $address_info['zipcode'];
         }
 
-        $modify_sql->modifyAddress($_POST['city'], $_POST['state'], $_POST['country'], $_POST['zipcode'], $_SESSION['userID']));
+        $modify_sql->modifyAddress($_POST['city'], $_POST['state'], $_POST['country'], $_POST['zipcode'], $_SESSION['userID']);
         echo '<div class="alert alert-success" role="alert">Your Address has been Modified. <a href="index.php">Return to Index</a></div>';
     } 
     if (isset($_POST['modifyaccount'])) {
@@ -56,13 +48,17 @@
             $_POST['lastname'] = $_SESSION['lastname'];
         }
 
-        $modify_sql->modifyAccount($_POST['email'], $_POST['password'], $_POST['firstname'], $_POST['lastname'], isset($_POST['admin']);
+        $modify_sql->modifyAccount($_POST['email'], $_POST['password'], $_POST['firstname'], $_POST['lastname'], isset($_POST['admin']));
         echo '<div class="alert alert-success" role="alert">Your Account has been Modified. <a href="index.php">Return to Index</a></div>';
     }
 
     if (isset($_POST['modifyreward'])) {
+        $reward_id = $_GET['rewardid'];
+        $reward_row = $modify_sql->rewardInfo($_GET['rewardid']);
+        $reward_project_id = $reward_row['project_ID'];
+        
         if (!strlen($_POST['name']) > 0) {
-            $_POST['name'] = $reward_row['reward_name']
+            $_POST['name'] = $reward_row['reward_name'];
         }
 
         if (!strlen($_POST['price']) > 0) {
@@ -83,14 +79,14 @@
         }
 
         if (!strlen($_POST['projectdescription']) > 0) {
-            $_POST['projectdescription'] = $reward_row['project_description'];
+            $_POST['projectdescription'] = $project_info['project_description'];
         }
 
         if (!strlen($_POST['goal']) > 0) {
-            $_POST['goal'] = $_SESSION['project_goal'];
+            $_POST['goal'] = $project_info['project_goal'];
         }
 
-        $modify_sql->modifyProject($_POST['name'], $_POST['price'], $_POST['goal'], $project_id);
+        $modify_sql->modifyProject($_POST['projectname'], $_POST['projectdescription'], $_POST['goal'], $project_id);
         echo '<div class="alert alert-success" role="alert">Project has been Modified. <a href="project.php?projectid='.$project_id.'">Return to Index</a></div>';
     }
 
