@@ -69,6 +69,9 @@
             </div>
         </div>
     </nav>
+    <button type="button" class="btn btn-light">
+        <a href="project.php?projectid=1" style="text-decoration:none; color: black;">project</a>
+    </button>
     <?php
     if ($_SESSION['logged'] == 'true' && $_SESSION['admin'] == 1) {
     ?>
