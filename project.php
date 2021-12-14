@@ -12,7 +12,7 @@
     $rewards = $project_sql->getRewards($id);
 
     $canPay = 'disabled';
-    if ($_SESSION['logged']) {
+    if ($_SESSION['logged']=='true') {
         $canPay = null;
     }
 
@@ -102,7 +102,7 @@
                             <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)">
                         </div>
                         <div class="container">
-                            <button class="btn btn-primary m-3">
+                            <button class="btn btn-primary m-3 <?=$canPay?>">
                                 Submit
                             </button>
                         </div>
@@ -114,7 +114,8 @@
                 <div class="container p-3">
                     <?php
                         $i = 0;
-                        foreach ($rewards as $r){
+                        $newRewards = SqlOperation::sortArray($rewards,'reward_price');
+                        foreach ($newRewards as $r){
                             $i++;     
                     ?>
                         <h5>tier <?=$i?>:</h5>
@@ -151,6 +152,7 @@
         if($_SESSION['admin'] && $_SESSION['userID']==$project['user_ID']){
     ?>
     <div class="container p-3">
+    <button type="button" class="btn btn-info"><a href="createreward.php?projectid=<?=$id?>" style="text-decoration: none; color: white;">Add Rewards</a></button>
         <button type="button" class="btn btn-info"><a href="modify.php?entity=project&projectid=<?=$id?>" style="text-decoration: none; color: white;">Modify</a></button>
         <button type="button" class="btn btn-danger"><a href="delete.php?entity=project&projectid=<?=$id?>" style="text-decoration: none; color: white;">Delete</a></button>
     </div>

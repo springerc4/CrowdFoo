@@ -2,32 +2,32 @@
     require_once('settings.php');
     require_once('sqlfunctions.php');
     session_start();
+    
+    $reward_sql = new SqlOperation($db);
 
-    if (!($_SESSION['admin'])) {
-        header('location: index.php');
-    }
-    
-    
-    $create_sql = new SqlOperation($db);
-    
+    $id = $_GET['projectid'];
+
     if (isset($_POST['name'])){
         if(is_numeric($_POST['goal'])){
-            $create_sql->createProject($_POST['name'],$_POST['description'],$_POST['goal'],$_POST['category']);
+            $reward_sql->addReward($_POST['name'],$_POST['goal'],$_POST['description'],$id);
+
             ?>
             <div class="alert alert-success">
-                <strong>Success!</strong> Project Created.
+                <strong>Success!</strong> reward added. Add another or go back to index.
                 <a href="index.php"></a>
             </div>
-        <?php
+            
+            <?php
         }
         else{
             ?>
             <div class="alert alert-danger">
-                <strong>Error</strong> goal amount must be an integer.
+                <strong>Error</strong> reward amount must be an integer.
                 <a href="index.php"></a>
             </div>
-            <?php
+        <?php
         }
+
     }
 ?>
 <!DOCTYPE html>
@@ -35,11 +35,11 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Create Project</title>
+    <title>add rewards</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
             <a class="navbar-brand" href="index.php">CrowdFoo</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,34 +81,20 @@
             </div>
         </div>
     </nav>
-    <div class="form" style="margin: auto;">
-        <form method = "post">
-            <div>
-                <label for="name">Project Name:</label><br>
-                <input type="text" id="name" name="name">
-            </div>
-            <div>
-                <label for="description">Project description:</label><br>
-                <textarea name="description" id="description" cols="30" rows="5"></textarea>
-            </div>
-            <div>
-                <label for="goals">Project goal amount:</label><br>
-                <div class="input-group mb-3 w-25">
-                            <span class="input-group-text">$</span>
-                            <input type="text" class="form-control" name="goal" id="goal" aria-label="Amount (to the nearest dollar)">
-                        </div>
-            </div>
-            <div>
-                <label for="category">Choose appropiate catagory:</label><br>
-                <select name="category" id="category">
-                    <?php
-                        $result = $db->query('SELECT category_name FROM categories');
-                        while($row = $result->fetch()){
-                    ?>
-                    <option value="<?=$row['category_name']?>"><?=$row['category_name']?></option>
-                    <?php } ?>
-                </select>
-            </div>
+    <div class="container mt-3">
+        <h3>Add a reward</h3>
+    </div>
+    <div class="container p-3 m-auto">
+        <form method="post">
+            <label for="name">reward name:</label><br>
+            <input type="text" id="name" name="name"><br>
+            <label for="description">reward description:</label><br>
+            <textarea name="description" id="description" cols="30" rows="3"></textarea><br>
+            <label for="goal">reward amount:</label><br>
+            <div class="input-group mb-3 w-25">
+                <span class="input-group-text">$</span>
+                <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)" name="goal">
+                </div>
             <button type="submit" class="btn btn-primary" style="margin-top: 2%;">Submit</button>
         </form>
     </div>
