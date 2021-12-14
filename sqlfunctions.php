@@ -262,6 +262,7 @@ class SqlOperation {
             $update_backers = $this->db->prepare('UPDATE projects SET number_of_backers = ? WHERE project_ID = ?');
             $update_backers->execute([$contributor_row['number_of_backers'], $project_id]);
         }
+    }
     public static function sortArray($array, $value){
         $newArray=[];
         while(sizeOf($array) > 0){
@@ -275,6 +276,13 @@ class SqlOperation {
             array_splice($array, $n, 1);
         }
         return $newArray;
+    }
+
+    public function getUserContribution($userID, $projectID){
+        $query = $this->db->prepare('SELECT * FROM money_contributed WHERE user_ID = ? AND project_ID = ?');
+        $query->execute(array($userID),array($projectID));
+        $array = $query->fetch();
+        return $array;
     }
 
 }

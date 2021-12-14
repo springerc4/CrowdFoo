@@ -11,7 +11,7 @@
     $create_sql = new SqlOperation($db);
     
     if (isset($_POST['name'])){
-        if(is_numeric($_POST['goal'])){
+        if(is_numeric($_POST['goal']) && $_POST['goal'] > 0){
             $create_sql->createProject($_POST['name'],$_POST['description'],$_POST['goal'],$_POST['category']);
             ?>
             <div class="alert alert-success">
@@ -23,7 +23,7 @@
         else{
             ?>
             <div class="alert alert-danger">
-                <strong>Error</strong> goal amount must be an integer.
+                <strong>Error</strong> goal amount must be an integer above 0.
                 <a href="index.php"></a>
             </div>
             <?php
