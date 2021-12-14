@@ -29,6 +29,9 @@
         }
     }
 
+    print_r($_SESSION['userID']);
+    print_r($_SESSION['admin']);
+
 
 
 ?>
@@ -159,13 +162,13 @@
         </div>
     </div>
     <?php
-        if($_SESSION['admin'] && $_SESSION['userID']==$project['user_ID']){
+        if($_SESSION['admin'] == 1 && ($_SESSION['userID']==$project['user_ID'])) {
     ?>
-    <div class="container p-3">
-    <button type="button" class="btn btn-info"><a href="createreward.php?projectid=<?=$id?>" style="text-decoration: none; color: white;">Add Rewards</a></button>
-        <button type="button" class="btn btn-info"><a href="modify.php?entity=project&projectid=<?=$id?>" style="text-decoration: none; color: white;">Modify</a></button>
-        <button type="button" class="btn btn-danger"><a href="delete.php?entity=project&projectid=<?=$id?>" style="text-decoration: none; color: white;">Delete</a></button>
-    </div>
+        <div class="container p-3">
+            <button type="button" class="btn btn-info"><a href="createreward.php?projectid=<?=$id?>" style="text-decoration: none; color: white;">Add Rewards</a></button>
+            <button type="button" class="btn btn-info"><a href="modify.php?entity=project&projectid=<?=$id?>" style="text-decoration: none; color: white;">Modify</a></button>
+            <button type="button" class="btn btn-danger"><a href="delete.php?entity=project&projectid=<?=$id?>" style="text-decoration: none; color: white;">Delete</a></button>
+        </div>
     <?php
         }
     ?>

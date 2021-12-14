@@ -101,12 +101,12 @@ class SqlOperation {
         }
     }
 
-    public function createProject($name, $description, $goal, $category_name) {
+    public function createProject($name, $description, $goal, $category_name, $user_id) {
         $categoryquery = $this->db->prepare('SELECT category_ID FROM categories WHERE category_name = ?');
         $categoryquery->execute(array($category_name));
         $category_row = $categoryquery->fetch();
-        $query = $this->db->prepare('INSERT INTO projects (project_name, project_description, number_of_backers, project_goal, category_ID) VALUES (?, ?, ?, ?, ?) ');
-        $query->execute([$name, $description, 0, $goal, $category_row['category_ID']]);
+        $query = $this->db->prepare('INSERT INTO projects (project_name, project_description, number_of_backers, project_goal, category_ID, user_ID) VALUES (?, ?, ?, ?, ?, ?) ');
+        $query->execute([$name, $description, 0, $goal, $category_row['category_ID'], $user_id]);
     }
 
     public function deleteProject($project_id) {
@@ -263,6 +263,7 @@ class SqlOperation {
             $update_backers->execute([$contributor_row['number_of_backers'], $project_id]);
         }
     }
+
     public static function sortArray($array, $value){
         $newArray=[];
         while(sizeOf($array) > 0){

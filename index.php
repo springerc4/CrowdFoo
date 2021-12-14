@@ -13,6 +13,8 @@
         $index_sql->setDefaultSession();
     }
 
+    $index_query = $db->query('SELECT * FROM projects ORDER BY project_ID DESC LIMIT 3');
+
 ?>
 
 <!DOCTYPE html>
@@ -69,9 +71,6 @@
             </div>
         </div>
     </nav>
-    <button type="button" class="btn btn-light">
-        <a href="project.php?projectid=1" style="text-decoration:none; color: black;">project</a>
-    </button>
     <?php
     if ($_SESSION['logged'] == 'true' && $_SESSION['admin'] == 1) {
     ?>
@@ -94,18 +93,20 @@
             New Projects
         </div>
         <ul class="list-group list-group-flush">
-            <li class="list-group-item">
-                <div class="card" style="width: 18rem;">
-                    <div class="card-body">
-                        <h5 class="card-title"></h5>
-                        <h6 class="card-subtitle mb-2 text-muted">Category: </h6>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                        <a href="#" class="card-link">Card link</a>
-                    </div>
-                </div>
-            </li>
-            <li class="list-group-item">A second item</li>
-            <li class="list-group-item">A third item</li>
+            <?php
+                while ($index_row = $index_query->fetch()) {
+                    $category_query = $db->prepare('SELECT category_name FROM categories WHERE category_ID = ?');
+                    $category_query->execute([$index_row['category_ID']]);
+                    $category_row = $category_query->fetch();
+            ?>
+            <div class="card-body">
+                <h5 class="card-title"><?php echo $index_row['project_name'] ?></h5>
+                <h6 class="card-subtitle mb-2 text-muted">Category: <?php echo $category_row['category_name']  ?></h6>
+                <a href="project.php?projectid=<?php echo $index_row['project_ID'] ?>" class="card-link">View Project</a>
+            </div>
+            <?php
+                }
+            ?>
         </ul>
     </div>
     
