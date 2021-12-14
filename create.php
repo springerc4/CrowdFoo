@@ -3,25 +3,31 @@
     require_once('sqlfunctions.php');
     session_start();
 
-    if ($_SESSION['logged'] == "false") {
+    if (!($_SESSION['admin'])) {
         header('location: index.php');
     }
     
+    
     $create_sql = new SqlOperation($db);
-
-    $query = $db->prepare('SELECT * FROM projects ORDER BY project_ID DESC LIMIT 1');
-    $query->execute();
-    $projectID = ($query->fetch())['project_ID']+1;
-
+    
     if (isset($_POST['name'])){
-        $create_sql->createProject($_POST['name'],$_POST['description'],$_POST['goal'],$_POST['category']);
-
-        ?>
-        <div class="alert alert-success">
-            <strong>Success!</strong> Project Created.
-            <a href="index.php"></a>
-        </div>
+        if(is_numeric($_POST['goal'])){
+            $create_sql->createProject($_POST['name'],$_POST['description'],$_POST['goal'],$_POST['category']);
+            ?>
+            <div class="alert alert-success">
+                <strong>Success!</strong> Project Created.
+                <a href="index.php"></a>
+            </div>
         <?php
+        }
+        else{
+            ?>
+            <div class="alert alert-danger">
+                <strong>Error</strong> goal amount must be an integer.
+                <a href="index.php"></a>
+            </div>
+            <?php
+        }
     }
 
     if (isset($_POST['createcategory'])) {

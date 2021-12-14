@@ -262,6 +262,19 @@ class SqlOperation {
             $update_backers = $this->db->prepare('UPDATE projects SET number_of_backers = ? WHERE project_ID = ?');
             $update_backers->execute([$contributor_row['number_of_backers'], $project_id]);
         }
+    public static function sortArray($array, $value){
+        $newArray=[];
+        while(sizeOf($array) > 0){
+            $n=0;
+            for($i=0;$i<count($array);$i++){
+                if($array[$i][$value] < $array[$n][$value]){
+                 $n = $i;
+                }
+            }
+            array_push($newArray,$array[$n]);
+            array_splice($array, $n, 1);
+        }
+        return $newArray;
     }
 
 }
