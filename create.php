@@ -12,7 +12,7 @@
     
     if (isset($_POST['name'])){
         if(is_numeric($_POST['goal'])){
-            $create_sql->createProject($_POST['name'],$_POST['description'],$_POST['goal'],$_POST['category']);
+            $create_sql->createProject($_POST['name'],$_POST['description'],$_POST['goal'],$_POST['category'], $_SESSION['userID']);
             ?>
             <div class="alert alert-success">
                 <strong>Success!</strong> Project Created.
