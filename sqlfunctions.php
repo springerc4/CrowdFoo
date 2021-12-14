@@ -30,17 +30,17 @@ class SqlOperation {
         $select_account->execute([$user_id]);
         $select_account_row = $select_account->fetch();
         if ($select_account_row['isAdmin'] == 1) {
-            $admin_projects = $this->db_prepare('SELECT project_ID FROM projects WHERE user_ID = ?');
+            $admin_projects = $this->db->prepare('SELECT project_ID FROM projects WHERE user_ID = ?');
             $admin_projects->execute([$user_id]);
-            $admin_projects_row = $admin_projects->fetch();
-            foreach ($admin_projects_row as $project) {
-                deleteProject($project);
+            while ($admin_projects_row = $admin_projects->fetch()) {
+                $this->deleteProject($admin_projects_row['project_ID']);
             }
         }
         $query = $this->db->prepare('DELETE FROM users WHERE user_ID = ?');
         $query->execute([$user_id]);
-        deleteAddress($user_id);
+        $this->deleteAddress($user_id);
         $_SESSION['logged'] = 'false';
+        header('lcoation: index.php');
     }
 
     public function modifyAccount($email, $password, $fname, $lname, $admin) {
@@ -86,6 +86,7 @@ class SqlOperation {
         } else {
             $query = $this->db->prepare('INSERT INTO categories (category_name) VALUES (?)');
             $query->execute([$name]);
+            echo '<div class="alert alert-success" role="alert">Your category has been added <a href="create.php?entity=project">Create new project.</a></div>';
         }
     }
 
@@ -111,14 +112,9 @@ class SqlOperation {
     public function deleteProject($project_id) {
         $query_rewards = $this->db->prepare('SELECT reward_ID FROM rewards WHERE project_ID = ?');
         $query_rewards->execute([$project_id]);
-        //$query_rewards_fetch = $query_rewards->fetch();
         while($query_rewards_fetch = $query_rewards->fetch()) {
             $this->deleteReward($query_rewards_fetch['reward_ID']);
         }
-        //foreach ($query_rewards_fetch as $reward) {
-            //print_r($reward);
-            //$this->deleteReward($reward);
-        //}
         $delete_project = $this->db->prepare('DELETE FROM projects WHERE project_ID = ?');
         $delete_project->execute([$project_id]);
     }
@@ -156,7 +152,7 @@ class SqlOperation {
     }
 
     public function deleteAddress($user_ID) {
-        $address_query = $this->db->prepare('DELETE * FROM customeraddresses WHERE user_ID = ?');
+        $address_query = $this->db->prepare('DELETE FROM customeraddresses WHERE user_ID = ?');
         $address_query->execute([$user_ID]);
     }
 
@@ -236,6 +232,36 @@ class SqlOperation {
         }
         return $rewardArray;
         
+    }
+
+    public function addMoney($money_input, $project_id) {
+        $project_query = $this->db->prepare('SELECT money_collected FROM projects WHERE project_ID = ?');
+        $project_query->execute([$project_id]);
+        $money_row = $project_query->fetch();
+        $money_row['money_collected'] = $money_row['money_collected'] + $money_input;
+        $new_money_query = $this->db->prepare('UPDATE projects SET money_collected = ? WHERE project_ID = ?');
+        $new_money_query->execute([$money_row['money_collected'], $project_id]);
+    }
+
+    public function newContributor($money_contributed, $user_id, $project_id) {
+        $user_query = $this->db->prepare('SELECT * FROM money_contributed WHERE user_ID = ? AND project_ID = ?');
+        $user_query->execute([$user_id, $project_id]);
+        $user_row = $user_query->fetch();
+        if ($user_row) {
+            $user_row['contributions'] = $user_row['contributions'] + $money_contributed;
+            $update_user = $this->db->prepare('UPDATE money_contributed SET contributions = ? WHERE user_ID = ? AND project_ID = ?');
+            $update_user->execute([$money_contributed, $user_id, $project_id]);
+        }
+        else {
+            $update_user = $this->db->prepare('INSERT INTO money_contributed (contributions, user_ID, project_ID) VALUES (?, ?, ?)');
+            $update_user->execute([$money_contributed, $user_id, $project_id]);
+            $new_contributor = $this->db->prepare('SELECT number_of_backers FROM projects WHERE project_ID = ?');
+            $new_contributor->execute([$project_id]);
+            $contributor_row = $new_contributor->fetch();
+            $contributor_row['number_of_backers'] = $contributor_row['number_of_backers'] + 1;
+            $update_backers = $this->db->prepare('UPDATE projects SET number_of_backers = ? WHERE project_ID = ?');
+            $update_backers->execute([$contributor_row['number_of_backers'], $project_id]);
+        }
     }
 
 }

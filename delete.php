@@ -5,10 +5,6 @@
 
     $delete_sql = new SqlOperation($db);
 
-    $project_id = $_GET['projectid'];
-
-    $project_info = $delete_sql->projectInfo($project_id);
-
     if (isset($_POST['deleteaccount'])) {
         $delete_sql->deleteAccount($_SESSION['userID']);
         echo '<div class="alert alert-success" role="alert">Your Account has been Deleted. <a href="index.php">Return to Index</a></div>';
@@ -29,6 +25,8 @@
     }
 
     if (isset($_POST['deleteproject'])) {
+        $project_id = $_GET['projectid'];
+        $project_info = $delete_sql->projectInfo($project_id);
         $delete_sql->deleteProject($project_id);
         echo '<div class="alert alert-success" role="alert">Project has been Deleted. <a href="index.php">Return to Index</a></div>';
     }

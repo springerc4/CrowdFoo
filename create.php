@@ -3,10 +3,9 @@
     require_once('sqlfunctions.php');
     session_start();
 
-    if (!isset($_SESSION['logged'])) {
+    if ($_SESSION['logged'] == "false") {
         header('location: index.php');
     }
-    //is admin
     
     $create_sql = new SqlOperation($db);
 
@@ -23,6 +22,14 @@
             <a href="index.php"></a>
         </div>
         <?php
+    }
+
+    if (isset($_POST['createcategory'])) {
+        $create_sql->createCategory($_POST['categoryname']);
+    }
+
+    if (isset($_POST['createaddress'])) {
+        $create_sql->addAddress($_POST['city'], $_POST['state'], $_POST['country'], $_POST['zipcode'], $_SESSION['userID']);
     }
 ?>
 <!DOCTYPE html>
@@ -76,6 +83,9 @@
             </div>
         </div>
     </nav>
+    <?php
+        if ($_GET['entity'] == "project") {
+    ?>
     <div class="form" style="margin: auto;">
         <form method = "post">
             <div>
@@ -94,7 +104,7 @@
                         </div>
             </div>
             <div>
-                <label for="category">Choose appropiate catagory:</label><br>
+                <label for="category">Choose appropiate category:</label><br>
                 <select name="category" id="category">
                     <?php
                         $result = $db->query('SELECT category_name FROM categories');
@@ -107,7 +117,53 @@
             <button type="submit" class="btn btn-primary" style="margin-top: 2%;">Submit</button>
         </form>
     </div>
+    <?php
+        } else if ($_GET['entity'] == "category") {
+    ?>
+    <div class="card">
+        <div class="card-body">
+            <h5>Add Category</h5>
+            <input type="text" class="form-control" id="categoryname" name="categoryname" placeholder="Category Name" aria-label="name">
+            <button type="submit" class="btn btn-primary" style="margin-top: 2%;" name="createcategory">Submit</button>
+        </div>
+    </div>
+
+    <?php
+        } else if ($_GET['entity'] == "address") {
+    ?>
+        <h3 style="text-align: center; margin-top: 7%;">Create Address</h3>
+        <div class="card" style="width: 40%; margin-left: 30%; margin-top: 3%;">
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="city" class="form-label">City</label>
+                    <input type="text" class="form-control" id="city" name="city">
+                </div>
+                <div class="mb-3">
+                    <label for="state" class="form-label">State/Province</label>
+                    <input type="text" class="form-control" id="state" name="state">
+                </div>
+                <div class="mb-3">
+                    <label for="country" class="form-label">Country</label>
+                    <input type="text" class="form-control" id="country" name="country">
+                </div>
+                <div class="mb-3">
+                    <label for="zipcode" class="form-label">Zipcode</label>
+                    <input type="text" class="form-control" id="zipcode" name="zipcode">
+                </div>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <a href="account.php" style="text-decoration: none; color: white;">Cancel</a>
+                </button>
+                <button type="submit" class="btn btn-primary" name="createaddress">Create</button>
+            </div>
+        </div>
+
+    <?php
+        } else {
+            echo 'Page Not Found.';
+        }
+    ?>
+
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
 </body>
-</html>
+</html> 

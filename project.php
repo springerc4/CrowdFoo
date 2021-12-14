@@ -18,6 +18,16 @@
 
     $goalRatio = ($project['money_collected']/$project['project_goal'])*100;
 
+    if (isset($_POST['contribute'])) {
+        if (is_numeric($_POST['contribute']) && ($_POST['contribute'] > 0)) {
+            $project_sql->addMoney($_POST['contribute'], $id);
+            $project_sql->newContributor($_POST['contribute'], $_SESSION['userID'], $id);
+            echo '<div class="alert alert-success" role="alert">You have successfully contributed '.$_POST['contribute'].'</div>';
+        }
+        else {
+            echo '<div class="alert alert-warning" role="alert">Input a valid amount</div>';
+        }
+    }
 
 
 
@@ -99,7 +109,7 @@
                     <form method='post'>
                         <div class="input-group mb-3 w-25">
                             <span class="input-group-text">$</span>
-                            <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)">
+                            <input type="number" class="form-control" aria-label="Amount (to the nearest dollar)" name="contribute">
                         </div>
                         <div class="container">
                             <button class="btn btn-primary m-3">

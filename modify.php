@@ -5,10 +5,6 @@
 
     $modify_sql = new SqlOperation($db);
 
-    $project_id = $_GET['projectid'];
-
-    $project_info = $modify_sql->projectInfo($project_id);
-
 
     if (isset($_POST['modifyaddress'])) {
         $address_info = $modify_sql->addressInfo($_SESSION['userID']);
@@ -32,7 +28,7 @@
         echo '<div class="alert alert-success" role="alert">Your Address has been Modified. <a href="index.php">Return to Index</a></div>';
     } 
     if (isset($_POST['modifyaccount'])) {
-        if (!strlen($_POST['city']) > 0) {
+        if (!strlen($_POST['email']) > 0) {
             $_POST['email'] = $_SESSION['email'];
         }
 
@@ -48,8 +44,13 @@
             $_POST['lastname'] = $_SESSION['lastname'];
         }
 
-        $modify_sql->modifyAccount($_POST['email'], $_POST['password'], $_POST['firstname'], $_POST['lastname'], isset($_POST['admin']));
-        echo '<div class="alert alert-success" role="alert">Your Account has been Modified. <a href="index.php">Return to Index</a></div>';
+        if ($modify_sql->contains($_POST['email'])) {
+            echo '<div class="alert alert-warning" role="alert">Email Already Registered.</div>';
+            $_POST['email'] = $_SESSION['email'];
+        } else {
+            $modify_sql->modifyAccount($_POST['email'], $_POST['password'], $_POST['firstname'], $_POST['lastname'], isset($_POST['admin']));
+            echo '<div class="alert alert-success" role="alert">Your Account has been Modified. <a href="index.php">Return to Index</a></div>';
+        }
     }
 
     if (isset($_POST['modifyreward'])) {
@@ -74,6 +75,8 @@
     }
 
     if (isset($_POST['modifyproject'])) {
+        $project_id = $_GET['projectid'];
+        $project_info = $modify_sql->projectInfo($project_id);
         if (!strlen($_POST['projectname']) > 0) {
             $_POST['projectname'] = $project_info['project_name'];
         }
