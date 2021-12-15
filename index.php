@@ -53,6 +53,9 @@
       border: 1px solid #CCCCCC;
       border-top: none;
       cursor: pointer;
+      position: relative;
+      z-index: 1;
+      background-color: white;
     }
     .result p:hover{
         background: #f2f2f2;
@@ -164,7 +167,7 @@
   ?>
     <div class="card" style="width: 18rem;">
         <div class="card-header">
-            Projects
+            Newest Projects
         </div>
         <ul class="list-group list-group-flush">
             <?php

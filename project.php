@@ -16,13 +16,10 @@
     $rewards = $project_sql->getRewards($id);
 
     $contribution = $project_sql->getUserContribution($_SESSION['userID'], $id);
-    
 
-    
-
-    $canPay = 'disabled';
-    if ($_SESSION['logged']=='true') {
-        $canPay = null;
+    $canPay = null;
+    if ($_SESSION['logged']=='false') {
+        $canPay = 'disabled'; 
     }
 
     $goalRatio = ($project['money_collected']/$project['project_goal'])*100;
@@ -137,7 +134,7 @@
                             $locked = "bi bi-lock-fill";
                             $color = "secondary";
                             $i++;
-                            if($contribution['contributions'] >= $r['reward_price']){
+                            if(isset($contribution['contributions']) && $contribution['contributions'] >= $r['reward_price']){
                                 $locked = "bi bi-check-circle";
                                 $color = "success";
                             }     
@@ -149,9 +146,10 @@
                             <span class="<?=$locked?>" ></span>
                             $<?=$r['reward_price']?>
                         </button>
+                        <?php if($_SESSION['admin'] == 1 && $_SESSION['userID']==$project['user_ID']){ ?>
                         <button type="button" class="btn btn-info"><a href="modify.php?entity=reward" style="text-decoration: none; color: white;">Modify Reward</a></button>
                         <button type="button" class="btn btn-danger"><a href="delete.php?entity=reward" style="text-decoration: none; color: white;">Delete Reward</a></button>
-
+                        <?php } ?>
                         <div class="modal" id="rewardDesc<?=$i?>">
                         <div class="modal-dialog">
                             <div class="modal-content">
@@ -175,7 +173,7 @@
         </div>
     </div>
     <?php
-        if($_SESSION['admin'] && $_SESSION['userID']==$project['user_ID']){
+        if($_SESSION['admin'] == 1 && $_SESSION['userID']==$project['user_ID']){
     ?>
     <div class="container p-3">
     <button type="button" class="btn btn-info"><a href="createreward.php?projectid=<?=$id?>" style="text-decoration: none; color: white;">Add Rewards</a></button>

@@ -9,7 +9,6 @@ $account_sql = new SqlOperation($db);
 $account_info = $account_sql->accountInfo($_SESSION['userID']);
 $address_info = $account_sql->addressInfo($_SESSION['userID']);
 $supportedProjects = $account_sql->getUsersSupportedProjects($_SESSION['userID']);
-print_r($supportedProjects);
 ?>
 
 <!DOCTYPE html>
@@ -51,10 +50,6 @@ print_r($supportedProjects);
                             <li class="list-group-item">
                                 <h5>Last Name:</h5>
                                 <p><?php echo $account_info['last_name'] ?></p>
-                            </li>
-                            <li class="list-group-item">
-                                <h5># of Project Supported:</h5>
-                                <p><?php echo $account_info['projects_supported'] ?></p>
                             </li>
                             <li class="list-group-item">
                                 <h5>Admin Status:</h5>
@@ -115,10 +110,12 @@ print_r($supportedProjects);
                         <ul class="list-group list-group-flush">
                             <?php
                             foreach($supportedProjects as $p){
-
+                                $result = $db->prepare('SELECT project_name FROM projects WHERE project_ID = ?'); 
+                                $result->execute([$p['project_ID']]);
+                                $projectName = $result->fetch();
                             ?>
                             <li class="list-group-item">
-                                <a href="projects.php?projectid=<?=$p['project_ID']?>">p</a>
+                                <a href="projects.php?projectid=<?=$p['project_ID']?>"><?=$projectName['project_name']?></a>
                             </li>
                             <?php } ?>
                         </ul>
@@ -126,7 +123,6 @@ print_r($supportedProjects);
                 </div>
             </div>
         </div>
-
     </body>
 </html>
 

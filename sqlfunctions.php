@@ -286,10 +286,15 @@ class SqlOperation {
     }
 
     public function getUserContribution($userID, $projectID){
+        if($userID == null){
+            return null;
+        }
+        else{
         $query = $this->db->prepare('SELECT * FROM money_contributed WHERE user_ID = ? AND project_ID = ?');
         $query->execute(array($userID, $projectID));
         $array = $query->fetch();
         return $array;
+        }
     }
 
     public function getUsersSupportedProjects($userID){
