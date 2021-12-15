@@ -281,9 +281,21 @@ class SqlOperation {
 
     public function getUserContribution($userID, $projectID){
         $query = $this->db->prepare('SELECT * FROM money_contributed WHERE user_ID = ? AND project_ID = ?');
-        $query->execute(array($userID),array($projectID));
+        $query->execute(array($userID, $projectID));
         $array = $query->fetch();
         return $array;
     }
+
+    public function getUsersSupportedProjects($userID){
+        $newArray=[];
+        $query = $this->db->prepare('SELECT project_ID FROM money_contributed WHERE user_ID = ?');
+        $query->execute(array($userID));
+        while($project = $query->fetch()){
+            array_push($newArray, $project);
+        }
+        return $newArray;
+    }
+
+    
 
 }
