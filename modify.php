@@ -32,6 +32,10 @@
             $_POST['email'] = $_SESSION['email'];
         }
 
+        if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
+            echo '<div class="alert alert-warning" role="alert">Please Enter a Valid Email Address</div>';
+        }
+
         if (!strlen($_POST['password']) > 0) {
             $_POST['password'] = $_SESSION['password'];
         }

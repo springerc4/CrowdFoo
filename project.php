@@ -137,6 +137,8 @@
                             <span class="spinner-grow spinner-grow-sm"></span>
                             $<?=$r['reward_price']?>
                         </button>
+                        <button type="button" class="btn btn-info"><a href="modify.php?entity=reward" style="text-decoration: none; color: white;">Modify Reward</a></button>
+                        <button type="button" class="btn btn-danger"><a href="delete.php?entity=reward" style="text-decoration: none; color: white;">Delete Reward</a></button>
 
                         <div class="modal" id="rewardDesc<?=$i?>">
                         <div class="modal-dialog">

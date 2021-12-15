@@ -5,6 +5,7 @@
 
     $delete_sql = new SqlOperation($db);
 
+
     if (isset($_POST['deleteaccount'])) {
         $delete_sql->deleteAccount($_SESSION['userID']);
         echo '<div class="alert alert-success" role="alert">Your Account has been Deleted. <a href="index.php">Return to Index</a></div>';
@@ -18,11 +19,6 @@
     if (isset($_POST['deletereward'])) {
         $delete_sql->deleteReward($reward_id);
         echo '<div class="alert alert-success" role="alert">Reward has been Deleted. <a href="project.php?projectid='.$reward_project_id.'">Return to Project</a></div>';
-    }
-
-    if (isset($_POST['deleteproject'])) {
-        $delete_sql->deleteProject($project_id);
-        echo '<div class="alert alert-success" role="alert">Project has been Deleted. <a href="index.php">Return to Index</a></div>';
     }
 
 ?>
@@ -104,5 +100,11 @@
     <?php
         } else {
             echo 'Page not found.';
+        }
+
+        if (isset($_POST['deleteproject'])) {
+            $delete_sql->deleteProject($project_id);
+            header('location: index.php');
+            echo '<div class="alert alert-success" role="alert">Project has been Deleted. <a href="index.php">Return to Index</a></div>';
         }
     ?>

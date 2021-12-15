@@ -12,7 +12,7 @@ class SqlOperation {
         $query = $this->db->prepare('SELECT * FROM users WHERE email = ?');
         $query->execute([$email]);
         $row = $query->fetch();
-        if ($row) {
+        if ($row && $row['user_ID'] != $_SESSION['userID']) {
             if ($password == null) {
                 return true;
             }
@@ -45,9 +45,6 @@ class SqlOperation {
 
     public function modifyAccount($email, $password, $fname, $lname, $admin) {
         $current_id = $_SESSION['userID'];
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            echo '<div class="alert alert-warning" role="alert">Please Enter a Valid Email Address</div>';
-        }
         if ((strlen($password) < 8 || strlen($password) > 16) && !strlen($password) == 0) {
             echo '<div class="alert alert-warning" role="alert">Password Must Be Between 8 and 16 Characters</div>';
         }
@@ -81,7 +78,7 @@ class SqlOperation {
     }
 
     public function createCategory($name) {
-        if (containsCategory($name)) {
+        if ($this->containsCategory($name)) {
             echo '<div class="alert alert-warning" role="alert">This category already exists</div>';
         } else {
             $query = $this->db->prepare('INSERT INTO categories (category_name) VALUES (?)');
