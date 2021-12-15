@@ -3,7 +3,7 @@
     require_once('sqlfunctions.php');
     session_start();
 
-    if (!($_SESSION['admin'])) {
+    if (!($_SESSION['admin']) && $_GET['entity'] != "address") {
         header('location: index.php');
     }
     
@@ -35,7 +35,18 @@
     }
 
     if (isset($_POST['createaddress'])) {
-        $create_sql->addAddress($_POST['city'], $_POST['state'], $_POST['country'], $_POST['zipcode'], $_SESSION['userID']);
+        if (!strlen($_POST['city']) > 0) {
+            echo '<div class="alert alert-warning" role="alert">Please Enter a City</div>';
+        } else if (!strlen($_POST['state']) > 0) {
+            echo '<div class="alert alert-warning" role="alert">Please Enter a State or Province</div>';
+        } else if (!strlen($_POST['country']) > 0) {
+            echo '<div class="alert alert-warning" role="alert">Please Enter a Country</div>';
+        } else if (!strlen($_POST['zipcode']) > 0) {
+            echo '<div class="alert alert-warning" role="alert">Please Enter a Zipcode</div>';
+        } else {
+            $create_sql->addAddress($_POST['city'], $_POST['state'], $_POST['country'], $_POST['zipcode'], $_SESSION['userID']);
+            echo '<div class="alert alert-success" role="alert">Address has been added!</div>';
+        }
     }
 ?>
 <!DOCTYPE html>
@@ -126,17 +137,20 @@
     <?php
         } else if ($_GET['entity'] == "category") {
     ?>
-    <div class="card">
-        <div class="card-body">
-            <h5>Add Category</h5>
-            <input type="text" class="form-control" id="categoryname" name="categoryname" placeholder="Category Name" aria-label="name">
-            <button type="submit" class="btn btn-primary" style="margin-top: 2%;" name="createcategory">Submit</button>
+    <form method="POST">
+        <div class="card">
+            <div class="card-body">
+                <h5>Add Category</h5>
+                <input type="text" class="form-control" id="categoryname" name="categoryname" placeholder="Category Name" aria-label="name">
+                <button type="submit" class="btn btn-primary" style="margin-top: 2%;" name="createcategory">Submit</button>
+            </div>
         </div>
-    </div>
+    </form>
 
     <?php
         } else if ($_GET['entity'] == "address") {
     ?>
+    <form method="POST">
         <h3 style="text-align: center; margin-top: 7%;">Create Address</h3>
         <div class="card" style="width: 40%; margin-left: 30%; margin-top: 3%;">
             <div class="card-body">
@@ -154,7 +168,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="zipcode" class="form-label">Zipcode</label>
-                    <input type="text" class="form-control" id="zipcode" name="zipcode">
+                    <input type="number" class="form-control" id="zipcode" name="zipcode">
                 </div>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     <a href="account.php" style="text-decoration: none; color: white;">Cancel</a>
@@ -162,7 +176,7 @@
                 <button type="submit" class="btn btn-primary" name="createaddress">Create</button>
             </div>
         </div>
-
+    </form>
     <?php
         } else {
             echo 'Page Not Found.';

@@ -56,10 +56,6 @@ $address_info = $account_sql->addressInfo($_SESSION['userID']);
                                 <p><?php echo $account_info['projects_supported'] ?></p>
                             </li>
                             <li class="list-group-item">
-                                <h5># of Rewards Purchased:</h5>
-                                <p><?php echo $account_info['rewards_purchased'] ?></p>
-                            </li>
-                            <li class="list-group-item">
                                 <h5>Admin Status:</h5>
                                 <p><?php 
                                     if ($account_info['isAdmin'] == 0) {
@@ -82,6 +78,10 @@ $address_info = $account_sql->addressInfo($_SESSION['userID']);
                     <?php
                         } else {
                     ?>
+                            <h5>Shipping Address: </h5>
+                            <button type="button" class="btn btn-primary" style="margin-top: 3%;"><a href="modify.php?entity=address" style="text-decoration: none; color: white;">Edit Address</a></button>
+                            <button type="button" class="btn btn-primary" style="margin-top: 3%;"><a href="delete.php?entity=address" style="text-decoration: none; color: white;">Delete Address</a></button>
+                            <br><br>
                             <div class="card" style="width: 18rem;">
                                 <ul class="list-group list-group-flush">
                                     <li class="list-group-item">
