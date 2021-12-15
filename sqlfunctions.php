@@ -288,4 +288,11 @@ class SqlOperation {
         return $newArray;
     }
 
+    public function getUserContribution($userID, $projectID){
+        $query = $this->db->prepare('SELECT * FROM money_contributed WHERE user_ID = ? AND project_ID = ?');
+        $query->execute(array($userID),array($projectID));
+        $array = $query->fetch();
+        return $array;
+    }
+
 }

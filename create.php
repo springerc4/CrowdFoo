@@ -23,7 +23,7 @@
         else{
             ?>
             <div class="alert alert-danger">
-                <strong>Error</strong> goal amount must be an integer.
+                <strong>Error</strong> goal amount must be an integer above 0.
                 <a href="index.php"></a>
             </div>
             <?php
