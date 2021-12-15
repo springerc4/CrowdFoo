@@ -152,18 +152,13 @@
     </br>
     <?php
     if (isset($_GET['projectname'])) {
-    while ($index_row = $index_query->fetch()) {
-          $category_query = $db->prepare('SELECT category_name FROM categories WHERE category_ID = ?');  //Change query.
-          $category_query->execute([$index_row['category_ID']]);
-          $category_row = $category_query->fetch();
-  ?>
-  <div class="card-body">
-      <h5 class="card-title"><?php echo $index_row['project_name'] ?></h5>
-      <h6 class="card-subtitle mb-2 text-muted">Category: <?php echo $category_row['category_name']  ?></h6>
-      <a href="project.php?projectid=<?php echo $index_row['project_ID'] ?>" class="card-link">View Project</a>
-  </div>
-<?php  }
-}
+      $searchterm = $_GET['projectname'];
+      $project_query = $db->prepare("SELECT project_ID FROM projects WHERE project_name = '$searchterm'");
+      $project_query->execute();
+      $result = $project_query->fetch();
+      print_r($result);
+      header("Location: project.php?projectid=".$result['project_ID']);
+  }
     else{
 
   ?>
