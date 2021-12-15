@@ -11,7 +11,7 @@
     $create_sql = new SqlOperation($db);
     
     if (isset($_POST['name'])){
-        if(is_numeric($_POST['goal'])){
+        if(is_numeric($_POST['goal']) && $_POST['goal']>0){
             $create_sql->createProject($_POST['name'],$_POST['description'],$_POST['goal'],$_POST['category'], $_SESSION['userID']);
             ?>
             <div class="alert alert-success">

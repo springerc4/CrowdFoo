@@ -15,6 +15,11 @@
 
     $rewards = $project_sql->getRewards($id);
 
+    $contribution = $project_sql->getUserContribution($_SESSION['userID'], $id);
+    
+
+    
+
     $canPay = 'disabled';
     if ($_SESSION['logged']=='true') {
         $canPay = null;
@@ -41,6 +46,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title><?=$project['project_name']?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
 
 </head>
 <body>
@@ -128,13 +134,19 @@
                         $i = 0;
                         $newRewards = SqlOperation::sortArray($rewards,'reward_price');
                         foreach ($newRewards as $r){
-                            $i++;     
+                            $locked = "bi bi-lock-fill";
+                            $color = "secondary";
+                            $i++;
+                            if($contribution['contributions'] >= $r['reward_price']){
+                                $locked = "bi bi-check-circle";
+                                $color = "success";
+                            }     
                     ?>
                         <h5>tier <?=$i?>:</h5>
                         <h6>Reward:</h6>
                         <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#rewardDesc<?=$i?>"><?=$r['reward_name']?></button>
-                        <button class="btn btn-success m-3 disabled">
-                            <span class="spinner-grow spinner-grow-sm"></span>
+                        <button class="btn btn-<?=$color?> m-3 disabled">
+                            <span class="<?=$locked?>" ></span>
                             $<?=$r['reward_price']?>
                         </button>
                         <button type="button" class="btn btn-info"><a href="modify.php?entity=reward" style="text-decoration: none; color: white;">Modify Reward</a></button>
@@ -163,13 +175,13 @@
         </div>
     </div>
     <?php
-        if($_SESSION['admin'] == 1 && ($_SESSION['userID']==$project['user_ID'])) {
+        if($_SESSION['admin'] && $_SESSION['userID']==$project['user_ID']){
     ?>
-        <div class="container p-3">
-            <button type="button" class="btn btn-info"><a href="createreward.php?projectid=<?=$id?>" style="text-decoration: none; color: white;">Add Rewards</a></button>
-            <button type="button" class="btn btn-info"><a href="modify.php?entity=project&projectid=<?=$id?>" style="text-decoration: none; color: white;">Modify</a></button>
-            <button type="button" class="btn btn-danger"><a href="delete.php?entity=project&projectid=<?=$id?>" style="text-decoration: none; color: white;">Delete</a></button>
-        </div>
+    <div class="container p-3">
+    <button type="button" class="btn btn-info"><a href="createreward.php?projectid=<?=$id?>" style="text-decoration: none; color: white;">Add Rewards</a></button>
+        <button type="button" class="btn btn-info"><a href="modify.php?entity=project&projectid=<?=$id?>" style="text-decoration: none; color: white;">Modify</a></button>
+        <button type="button" class="btn btn-danger"><a href="delete.php?entity=project&projectid=<?=$id?>" style="text-decoration: none; color: white;">Delete</a></button>
+    </div>
     <?php
         }
     ?>

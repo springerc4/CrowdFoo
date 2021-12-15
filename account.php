@@ -8,7 +8,8 @@ $account_sql = new SqlOperation($db);
 
 $account_info = $account_sql->accountInfo($_SESSION['userID']);
 $address_info = $account_sql->addressInfo($_SESSION['userID']);
-
+$supportedProjects = $account_sql->getUsersSupportedProjects($_SESSION['userID']);
+print_r($supportedProjects);
 ?>
 
 <!DOCTYPE html>
@@ -105,6 +106,23 @@ $address_info = $account_sql->addressInfo($_SESSION['userID']);
                     <?php
                         }
                     ?>
+                </div>
+                <div class="col mt-5">
+                    <div class="card">
+                        <div class="card-header">
+                            Projects you have supported
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <?php
+                            foreach($supportedProjects as $p){
+
+                            ?>
+                            <li class="list-group-item">
+                                <a href="projects.php?projectid=<?=$p['project_ID']?>">p</a>
+                            </li>
+                            <?php } ?>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
