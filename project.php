@@ -7,6 +7,10 @@
 
     $id = $_GET['projectid'];
 
+    if (isset($_GET['contribute'])) {
+        $_GET['contribute'] == 0;
+    }
+
     $project = $project_sql->getProject($id);
 
     $rewards = $project_sql->getRewards($id);
@@ -25,9 +29,7 @@
 
     if (isset($_POST['contribute'])) {
         if (is_numeric($_POST['contribute']) && ($_POST['contribute'] > 0)) {
-            $project_sql->addMoney($_POST['contribute'], $id);
-            $project_sql->newContributor($_POST['contribute'], $_SESSION['userID'], $id);
-            echo '<div class="alert alert-success" role="alert">You have successfully contributed '.$_POST['contribute'].'</div>';
+            header('location: order.php?projectid='.$id.'&contribute='.$_POST['contribute']);
         }
         else {
             echo '<div class="alert alert-warning" role="alert">Input a valid amount</div>';

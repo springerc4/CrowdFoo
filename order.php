@@ -6,11 +6,15 @@
 
     $order_sql = new SqlOperation($db);
 
+    $project_id = $_GET['projectid'];
+
     $address_info = $order_sql->addressInfo($_SESSION['userID']);
 
     if (isset($_POST['confirmorder'])) {
-        $order_sql->placeOrder(date("Y-m-d"), date("Y-m-d"), $_SESSION['userID'], );
-        echo '<div class="alert alert-success" role="alert">Your order has been placed. <a href="#">Return to Project</a></div>';
+        $order_sql->placeOrder(date("Y-m-d"), date("Y-m-d"), $_SESSION['userID']);
+        $order_sql->addMoney($_GET['contribute'], $project_id);
+        $order_sql->newContributor($_GET['contribute'], $_SESSION['userID'], $project_id);
+        echo '<div class="alert alert-success" role="alert">Your order has been placed. <a href="project.php?projectid='.$project_id.'">Return to Project</a></div>';
     }
 ?>
 
@@ -95,7 +99,7 @@
                     <div class="card-body">
                         <form method="POST">
                             <button type="button" class="btn btn-secondary">
-                                <a href="#" style="text-decoration: none; color: white;">Cancel</a>
+                                <a href="project.php?projectid=<?= $project_id ?>" style="text-decoration: none; color: white;">Cancel</a>
                             </button>
                             <button type="submit" class="btn btn-primary" name="confirmorder">Confirm</button>
                         </form>

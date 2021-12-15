@@ -12,21 +12,15 @@
 
     if (isset($_POST['deleteaddress'])) {
         $delete_sql->deleteAddress($_SESSION['userID']);
-        echo '<div class="alert alert-success" role="alert">Your Address has been Deleted. <a href="index.php">Return to Index</a></div>';
+        echo '<div class="alert alert-success" role="alert">Your Address has been Deleted. <a href="account.php">Return to Account</a></div>';
     }
 
     if (isset($_POST['deletereward'])) {
-        $reward_id = $_GET['rewardid'];
-        $reward_row = $delete_sql->rewardInfo($reward_id);
-        $reward_project_id = $reward_row['project_ID'];
-
         $delete_sql->deleteReward($reward_id);
         echo '<div class="alert alert-success" role="alert">Reward has been Deleted. <a href="project.php?projectid='.$reward_project_id.'">Return to Project</a></div>';
     }
 
     if (isset($_POST['deleteproject'])) {
-        $project_id = $_GET['projectid'];
-        $project_info = $delete_sql->projectInfo($project_id);
         $delete_sql->deleteProject($project_id);
         echo '<div class="alert alert-success" role="alert">Project has been Deleted. <a href="index.php">Return to Index</a></div>';
     }
@@ -73,6 +67,9 @@
 		</div>
     <?php
         } else if ($_GET['entity'] == "reward") {
+            $reward_id = $_GET['rewardid'];
+            $reward_row = $delete_sql->rewardInfo($reward_id);
+            $reward_project_id = $reward_row['project_ID'];
     ?>
         <div class="card" style="width: 30%;">
 			<form method="post">
@@ -88,6 +85,8 @@
 		</div>
     <?php
         } else if ($_GET['entity'] == "project") {
+            $project_id = $_GET['projectid'];
+            $project_info = $delete_sql->projectInfo($project_id);
     ?>
         <div class="card" style="width: 30%;">
 			<form method="post">

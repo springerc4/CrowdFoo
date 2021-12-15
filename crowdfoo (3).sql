@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 08, 2021 at 09:16 PM
+-- Generation Time: Dec 14, 2021 at 10:07 PM
 -- Server version: 10.4.20-MariaDB
 -- PHP Version: 8.0.9
 
@@ -28,9 +28,17 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `categories` (
-  `category_name` varchar(64) NOT NULL,
-  `category_ID` int(11) NOT NULL
+  `category_ID` int(11) NOT NULL,
+  `category_name` varchar(64) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `categories`
+--
+
+INSERT INTO `categories` (`category_ID`, `category_name`) VALUES
+(1, 'Tech'),
+(2, 'Music');
 
 -- --------------------------------------------------------
 
@@ -42,22 +50,31 @@ CREATE TABLE `customeraddresses` (
   `address_ID` int(11) NOT NULL,
   `city` varchar(32) NOT NULL,
   `country` varchar(32) NOT NULL,
-  `state` varchar(16) NOT NULL,
-  `zipcode` tinyint(9) NOT NULL
+  `_state` varchar(16) NOT NULL,
+  `zipcode` tinyint(9) NOT NULL,
+  `user_ID` int(10) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `orderdetails`
+-- Table structure for table `money_contributed`
 --
 
-CREATE TABLE `orderdetails` (
-  `detail_ID` int(11) NOT NULL,
-  `order_ID` int(11) NOT NULL,
-  `reward_ID` int(11) NOT NULL,
-  `reward_quantity` int(10) UNSIGNED NOT NULL
+CREATE TABLE `money_contributed` (
+  `contributions` int(11) NOT NULL,
+  `user_ID` int(10) UNSIGNED NOT NULL,
+  `project_ID` int(10) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `money_contributed`
+--
+
+INSERT INTO `money_contributed` (`contributions`, `user_ID`, `project_ID`) VALUES
+(-2, 0, 4),
+(1000, 15, 7),
+(25, 15, 8);
 
 -- --------------------------------------------------------
 
@@ -70,9 +87,8 @@ CREATE TABLE `orders` (
   `user_ID` int(11) DEFAULT NULL,
   `date_ordered` date NOT NULL,
   `date_fulfilled` date NOT NULL,
-  `payment_type` varchar(32) NOT NULL,
-  `total_quantity` int(11) NOT NULL,
-  `address_ID` int(11) NOT NULL
+  `address_ID` int(11) NOT NULL,
+  `reward_ID` int(10) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -82,14 +98,25 @@ CREATE TABLE `orders` (
 --
 
 CREATE TABLE `projects` (
+  `project_ID` int(11) NOT NULL,
   `project_name` varchar(64) NOT NULL,
   `project_description` text NOT NULL,
   `number_of_backers` int(11) NOT NULL,
   `project_goal` int(11) NOT NULL,
-  `project_ID` int(11) NOT NULL,
+  `money_collected` int(11) NOT NULL,
   `user_ID` int(11) DEFAULT NULL,
   `category_ID` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `projects`
+--
+
+INSERT INTO `projects` (`project_ID`, `project_name`, `project_description`, `number_of_backers`, `project_goal`, `money_collected`, `user_ID`, `category_ID`) VALUES
+(4, 'test name', 'test description', 1, 100, 104, NULL, 1),
+(5, 'project 2', 'this is project 2', 0, 3000, 0, 15, 2),
+(6, 'project 3', 'this is project 3', 0, 5000, 0, 15, 1),
+(8, 'project 4', 'this is project 4', 1, 200, 25, 15, 1);
 
 -- --------------------------------------------------------
 
@@ -98,14 +125,19 @@ CREATE TABLE `projects` (
 --
 
 CREATE TABLE `rewards` (
+  `reward_ID` int(11) NOT NULL,
   `reward_name` varchar(64) NOT NULL,
   `reward_price` int(10) UNSIGNED NOT NULL,
   `reward_description` text NOT NULL,
-  `quantity_available` int(11) NOT NULL,
-  `virtual_reward` tinyint(1) NOT NULL,
-  `reward_ID` int(11) NOT NULL,
   `project_ID` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `rewards`
+--
+
+INSERT INTO `rewards` (`reward_ID`, `reward_name`, `reward_price`, `reward_description`, `project_ID`) VALUES
+(5, 'reward 1', 20, 'reward 1', 8);
 
 -- --------------------------------------------------------
 
@@ -114,12 +146,12 @@ CREATE TABLE `rewards` (
 --
 
 CREATE TABLE `users` (
+  `user_ID` int(11) NOT NULL,
   `projects_supported` int(10) UNSIGNED NOT NULL DEFAULT 0,
   `rewards_purchased` int(10) UNSIGNED NOT NULL DEFAULT 0,
   `user_password` varchar(16) NOT NULL,
   `first_name` varchar(48) NOT NULL,
   `last_name` varchar(48) NOT NULL,
-  `user_ID` int(11) NOT NULL,
   `isAdmin` tinyint(1) NOT NULL DEFAULT 0,
   `projects_managed` smallint(5) UNSIGNED NOT NULL DEFAULT 0,
   `email` varchar(64) NOT NULL
@@ -129,10 +161,10 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`projects_supported`, `rewards_purchased`, `user_password`, `first_name`, `last_name`, `user_ID`, `isAdmin`, `projects_managed`, `email`) VALUES
-(0, 0, 'password', 'cameron', 'springer', 1, 1, 0, 'camspringer7@outlook.com'),
-(0, 0, 'pass', 'brett', 'thaman', 2, 0, 0, 'thaman1@nku.edu'),
-(0, 0, 'hello', 'cam', 'bam', 3, 0, 0, 'cambam@sam.mam');
+INSERT INTO `users` (`user_ID`, `projects_supported`, `rewards_purchased`, `user_password`, `first_name`, `last_name`, `isAdmin`, `projects_managed`, `email`) VALUES
+(15, 0, 0, 'password', 'Cameron', 'Springer', 1, 0, 'camspringer7@outlook.com'),
+(16, 0, 0, 'secondpassword', 'brett', 'thaman', 0, 0, 'thaman1@nku.edu'),
+(23, 0, 0, 'jumpman23', 'Lee', 'Springer', 1, 0, 'springerc4@nku.edu');
 
 --
 -- Indexes for dumped tables
@@ -148,15 +180,15 @@ ALTER TABLE `categories`
 -- Indexes for table `customeraddresses`
 --
 ALTER TABLE `customeraddresses`
-  ADD PRIMARY KEY (`address_ID`);
+  ADD PRIMARY KEY (`address_ID`),
+  ADD KEY `User ID` (`user_ID`);
 
 --
--- Indexes for table `orderdetails`
+-- Indexes for table `money_contributed`
 --
-ALTER TABLE `orderdetails`
-  ADD PRIMARY KEY (`detail_ID`),
-  ADD KEY `order_ID` (`order_ID`),
-  ADD KEY `reward_ID` (`reward_ID`);
+ALTER TABLE `money_contributed`
+  ADD KEY `User ID` (`user_ID`),
+  ADD KEY `Project ID` (`project_ID`);
 
 --
 -- Indexes for table `orders`
@@ -164,7 +196,8 @@ ALTER TABLE `orderdetails`
 ALTER TABLE `orders`
   ADD PRIMARY KEY (`order_ID`),
   ADD KEY `user_ID` (`user_ID`),
-  ADD KEY `address_ID` (`address_ID`);
+  ADD KEY `address_ID` (`address_ID`),
+  ADD KEY `Reward ID` (`reward_ID`);
 
 --
 -- Indexes for table `projects`
@@ -195,7 +228,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `category_ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `category_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `customeraddresses`
@@ -204,39 +237,32 @@ ALTER TABLE `customeraddresses`
   MODIFY `address_ID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `orderdetails`
---
-ALTER TABLE `orderdetails`
-  MODIFY `detail_ID` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
   MODIFY `order_ID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `projects`
+--
+ALTER TABLE `projects`
+  MODIFY `project_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
 -- AUTO_INCREMENT for table `rewards`
 --
 ALTER TABLE `rewards`
-  MODIFY `reward_ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `reward_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `user_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- Constraints for dumped tables
 --
-
---
--- Constraints for table `orderdetails`
---
-ALTER TABLE `orderdetails`
-  ADD CONSTRAINT `orderdetails_ibfk_1` FOREIGN KEY (`order_ID`) REFERENCES `orders` (`order_ID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `orderdetails_ibfk_2` FOREIGN KEY (`reward_ID`) REFERENCES `rewards` (`reward_ID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `orders`

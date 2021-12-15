@@ -107,6 +107,10 @@ class SqlOperation {
         $category_row = $categoryquery->fetch();
         $query = $this->db->prepare('INSERT INTO projects (project_name, project_description, number_of_backers, project_goal, category_ID, user_ID) VALUES (?, ?, ?, ?, ?, ?) ');
         $query->execute([$name, $description, 0, $goal, $category_row['category_ID'], $user_id]);
+        $user_query = $this->db->query('SELECT projects_managed FROM users WHERE user_ID = '.$user_id);
+        $user_row = $user_query->fetch();
+        $user_row['projects_managed']++;
+        $this->db->query('UPDATE users SET projects_managed = '.$user_row['projects_managed'].' WHERE user_ID = '.$user_id);
     }
 
     public function deleteProject($project_id) {
@@ -205,10 +209,10 @@ class SqlOperation {
         return $reward_query->fetch();
     }
 
-    public function placeOrder($date_ordered, $date_fulfilled, $user_id, $reward_id) {
-        $address_info = addressInfo($user_id);
-        $order_query = $this->db->prepare('INSERT INTO orders (date_ordered, date_fulfilled, user_ID, reward_ID, address_ID) VALUES (?, ?, ?, ?, ?)');
-        $order_query->execute([$date_ordered, $date_fulfilled, $user_id, $project_id, $address_info['address_ID']]);
+    public function placeOrder($date_ordered, $date_fulfilled, $user_id) {
+        $address_info = $this->addressInfo($user_id);
+        $order_query = $this->db->prepare('INSERT INTO orders (date_ordered, date_fulfilled, user_ID, address_ID) VALUES (?, ?, ?, ?)');
+        $order_query->execute([$date_ordered, $date_fulfilled, $user_id, $address_info['address_ID']]);
     }
 
     public function updateAmounts($backers, $money_collected, $project_id) {
@@ -261,6 +265,11 @@ class SqlOperation {
             $contributor_row['number_of_backers'] = $contributor_row['number_of_backers'] + 1;
             $update_backers = $this->db->prepare('UPDATE projects SET number_of_backers = ? WHERE project_ID = ?');
             $update_backers->execute([$contributor_row['number_of_backers'], $project_id]);
+            $support_query = $this->db->query('SELECT projects_supported FROM users WHERE user_ID = '.$user_id);
+            $support_row = $support_query->fetch();
+            $support_row['projects_supported'] = $support_row['projects_supported'] + 1;
+            $support_query = $this->db->prepare('UPDATE users SET projects_supported = ? WHERE user_ID = ?');
+            $support_query->execute([$support_row['projects_supported'], $user_id]);
         }
     }
 

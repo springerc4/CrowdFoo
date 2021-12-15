@@ -63,6 +63,22 @@
                                     <a href="account.php" style="text-decoration: none; color: black;">View Account</a>
                                 </button>
                             </li>
+                            <?php
+                                if ($_SESSION['admin'] == 1) {
+                            ?>
+                                <li class="nav-item">
+                                    <button type="button" class="btn btn-light">
+                                        <a href="create.php?entity=category" style="text-decoration: none; color: black;">Create Category</a>
+                                    </button>
+                                </li>
+                                <li class="nav-item">
+                                    <button type="button" class="btn btn-light">
+                                        <a href="create.php?entity=project" style="text-decoration: none; color: black;">Create Project</a>
+                                    </button>
+                                </li>
+                                <?php
+                                }
+                                ?>
                     <?php
                         }
 
@@ -71,24 +87,7 @@
             </div>
         </div>
     </nav>
-    <?php
-    if ($_SESSION['logged'] == 'true' && $_SESSION['admin'] == 1) {
-    ?>
-        <div class="container" style="margin-top: 5%; margin-left: 0%;">
-            <ul class="nav flex-column">
-                <li class="nav-item">
-                    <button type="button" class="btn btn-info"><a href="create.php?entity=category" style="text-decoration: none; color: white;">Create Category</a></button>
-                </li>
-                <br><br>
-                <li class="nav-item">
-                    <button type="button" class="btn btn-info"><a href="create.php?entity=project" style="text-decoration: none; color: white;">Create Project</a></button>
-                </li>
-            </ul>
-        </div>
-    <?php
-        }
-    ?>
-    <div class="card" style="width: 18rem;">
+    <div class="card" style="width: 18rem; margin-left: 40%;">
         <div class="card-header">
             New Projects
         </div>

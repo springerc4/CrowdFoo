@@ -8,24 +8,24 @@
 
     if (isset($_POST['modifyaddress'])) {
         $address_info = $modify_sql->addressInfo($_SESSION['userID']);
-        if (!strlen($_POST['email']) > 0) {
+        if (!strlen($_POST['city']) > 0) {
             $_POST['city'] = $address_info['city'];
         }
 
-        if (!strlen($_POST['password']) > 0) {
+        if (!strlen($_POST['state']) > 0) {
             $_POST['state'] = $address_info['_state'];
         }
 
-        if (!strlen($_POST['firstname']) > 0) {
+        if (!strlen($_POST['country']) > 0) {
             $_POST['country'] = $address_info['country'];
         }
 
-        if (!strlen($_POST['lastname']) > 0) {
+        if (!strlen($_POST['zipcode']) > 0) {
             $_POST['zipcode'] = $address_info['zipcode'];
         }
 
         $modify_sql->modifyAddress($_POST['city'], $_POST['state'], $_POST['country'], $_POST['zipcode'], $_SESSION['userID']);
-        echo '<div class="alert alert-success" role="alert">Your Address has been Modified. <a href="index.php">Return to Index</a></div>';
+        echo '<div class="alert alert-success" role="alert">Your Address has been Modified. <a href="account.php">Return to Account</a></div>';
     } 
     if (isset($_POST['modifyaccount'])) {
         if (!strlen($_POST['email']) > 0) {
