@@ -1,9 +1,9 @@
 <?php
 
-$host = '127.0.0.1';
-$user = 'root';
-$pass = '';
-$dbname = 'crowdfoo';
+$host = 'us-cdbr-east-05.cleardb.net';
+$user = 'b3b34371ab6c20';
+$pass = 'fdbaec50 ';
+$dbname = 'heroku_33e2be097e95825';
 $charset = 'utf8mb4';
 
 
