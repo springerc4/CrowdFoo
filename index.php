@@ -40,9 +40,7 @@
         border: 1px solid #CCCCCC;
         font-size: 20px;
     }
-    .result{
 
-    }
     .search-box input[type="text"], .result{
         width: 100%;
     }
@@ -78,7 +76,7 @@
       transition: all .3s ease;
   }
 
-    }
+    
     </style>
     <body>
 
@@ -140,7 +138,7 @@
             </div>
         </div>
     </nav>
-    <center><div class="container" style="width: 1000px">
+    <div class="container" style="width: 1000px">
         <div class="searchtext">
           <h2>Projects</h2>
         </div>
@@ -189,7 +187,7 @@
     </div>
   <?php }
 ?>
-</center>
+
       <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
       <script>
       $(document).ready(function(){

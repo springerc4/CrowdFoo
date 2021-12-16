@@ -30,9 +30,9 @@
     <div class="container">
         <h3> Confirm Your Order</h3>
         <br><br>
-        <div class="row align-items-start">
+        <div class="row align-items-start p-3">
             <div class="col">
-                <div class="card">
+                <div class="card mb-2">
                     <div class="card-body">
                         <h5>Date Ordered: </h5>
                         <p>
@@ -40,9 +40,15 @@
                         </p>
                     </div>
                 </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h5>Project supported:</h5>
+                        <p><?=$order_sql->projectName($project_id)['project_name'];?></p>
+                    </div>
+                </div>
             </div>
             <div class="col">
-                <div class="card">
+                <div class="card mb-2">
                     <div class="card-body">
                         <h5>Date Fulfilled: </h5>
                         <p>
@@ -50,12 +56,18 @@
                         </p>
                     </div>
                 </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h5>Amount:</h5>
+                        <p>$<?=$_GET['contribute']?></p>
+                    </div>
+                </div>
             </div>
             <div class="col">
                 <?php
                     if ($address_info != null) {
                 ?>
-                <div class="card" style="width: 18rem;">
+                <div class="card p-3" style="width: 18rem;">
                     <h5>Shipping Address: </h5>
                     <button type="button" class="btn btn-primary"><a href="modify.php?entity=address" style="text-decoration: none; color: white;">Edit Address</a></button>
                     <ul class="list-group list-group-flush">

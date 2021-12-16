@@ -13,8 +13,8 @@
 
             ?>
             <div class="alert alert-success">
-                <strong>Success!</strong> reward added. Add another or go back to index.
-                <a href="index.php"></a>
+                <strong>Success!</strong> reward added. Add another or go back to the <a href="project.php?projectid=<?=$id?>">project</a>
+                
             </div>
             
             <?php

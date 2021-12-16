@@ -8,6 +8,8 @@ class SqlOperation {
         $this->db = $db;
     }
 
+##########################################################--- User ---########################################################################
+
     public function contains($email, $password = null) {
         $query = $this->db->prepare('SELECT * FROM users WHERE email = ?');
         $query->execute([$email]);
@@ -57,6 +59,16 @@ class SqlOperation {
         $_SESSION['lastname'] = $lname;
     }
 
+    public function accountInfo($account_id) {
+        $account_query = $this->db->prepare('SELECT projects_supported, rewards_purchased, first_name, last_name, isAdmin, projects_managed, email FROM users WHERE user_ID = ?');
+        $account_query->execute([$account_id]);
+        $account_row = $account_query->fetch();
+        return $account_row;
+    }
+
+    ##########################################################--- category ---########################################################################
+
+
     public function modifyCategory($previous_name, $new_name) {
         $categoryquery = $this->db->prepare('SELECT category_ID FROM categories WHERE category_name = ?');
         $categoryquery->execute($previous_name);
@@ -98,6 +110,9 @@ class SqlOperation {
         }
     }
 
+    ##########################################################--- Project ---########################################################################
+
+
     public function createProject($name, $description, $goal, $category_name, $user_id) {
         $categoryquery = $this->db->prepare('SELECT category_ID FROM categories WHERE category_name = ?');
         $categoryquery->execute(array($category_name));
@@ -110,6 +125,13 @@ class SqlOperation {
         $this->db->query('UPDATE users SET projects_managed = '.$user_row['projects_managed'].' WHERE user_ID = '.$user_id);
     }
 
+    public function getProject($id){
+        $projectQuery = $this->db->prepare('SELECT * FROM projects WHERE project_ID = ?');
+        $projectQuery->execute(array($id));
+        $projectArray = $projectQuery->fetch();
+        return $projectArray;
+    }
+
     public function deleteProject($project_id) {
         $query_rewards = $this->db->prepare('SELECT reward_ID FROM rewards WHERE project_ID = ?');
         $query_rewards->execute([$project_id]);
@@ -120,10 +142,11 @@ class SqlOperation {
         $delete_project->execute([$project_id]);
     }
 
-    public function projectInfo($project_id) {
-        $project_query = $this->db->prepare('SELECT * FROM projects WHERE project_ID = ?');
-        $project_query->execute([$project_id]);
-        return $project_query->fetch();
+    public function projectName($project_id) {
+        $result = $this->db->prepare('SELECT project_name FROM projects WHERE project_ID = ?'); 
+        $result->execute([$project_id]);
+        $projectName = $result->fetch();
+        return $projectName;
     }
 
     public function modifyProject($name, $description, $goal, $project_id) {
@@ -131,12 +154,18 @@ class SqlOperation {
         $modify_project->execute([$name, $description, $goal, $project_id]);
     }
 
-    public function accountInfo($account_id) {
-        $account_query = $this->db->prepare('SELECT projects_supported, rewards_purchased, first_name, last_name, isAdmin, projects_managed, email FROM users WHERE user_ID = ?');
-        $account_query->execute([$account_id]);
-        $account_row = $account_query->fetch();
-        return $account_row;
+    public function getUsersSupportedProjects($userID){
+        $newArray=[];
+        $query = $this->db->prepare('SELECT project_ID FROM money_contributed WHERE user_ID = ?');
+        $query->execute(array($userID));
+        while($project = $query->fetch()){
+            array_push($newArray, $project);
+        }
+        return $newArray;
     }
+
+    ##########################################################--- Customer Adress ---########################################################################
+
 
     public function addressInfo($user_id) {
         $address_query_2 = $this->db->prepare('SELECT city, country, _state, zipcode, address_ID FROM customeraddresses WHERE user_ID = ?');
@@ -170,6 +199,9 @@ class SqlOperation {
             return true;
         } else return false;
     }
+
+        ##########################################################--- Rewards ---########################################################################
+
 
     public function addReward($name, $price, $description, $project_id) {
         $reward_query = $this->db->prepare('INSERT INTO rewards (reward_name, reward_price, reward_description, project_ID) VALUES (?, ?, ?, ?)');
@@ -206,6 +238,20 @@ class SqlOperation {
         return $reward_query->fetch();
     }
 
+    public function getRewards($projectID){
+        $rewardArray = array();
+        $query = $this->db->prepare('SELECT * FROM rewards WHERE project_ID = ?');
+        $query->execute(array($projectID));
+        while($reward = $query->fetch()){ 
+           array_push($rewardArray, $reward); 
+        }
+        return $rewardArray;
+        
+    }
+
+        ##########################################################--- Orders ---########################################################################
+
+
     public function placeOrder($date_ordered, $date_fulfilled, $user_id) {
         $address_info = $this->addressInfo($user_id);
         $order_query = $this->db->prepare('INSERT INTO orders (date_ordered, date_fulfilled, user_ID, address_ID) VALUES (?, ?, ?, ?)');
@@ -217,23 +263,6 @@ class SqlOperation {
         $amount_query->execute([$backers, $money_collected, $project_id]);
     }
 
-    public function getProject($id){
-        $projectQuery = $this->db->prepare('SELECT * FROM projects WHERE project_ID = ?');
-        $projectQuery->execute(array($id));
-        $projectArray = $projectQuery->fetch();
-        return $projectArray;
-    }
-
-    public function getRewards($projectID){
-        $rewardArray = array();
-        $query = $this->db->prepare('SELECT * FROM rewards WHERE project_ID = ?');
-        $query->execute(array($projectID));
-        while($reward = $query->fetch()){ 
-           array_push($rewardArray, $reward); 
-        }
-        return $rewardArray;
-        
-    }
 
     public function addMoney($money_input, $project_id) {
         $project_query = $this->db->prepare('SELECT money_collected FROM projects WHERE project_ID = ?');
@@ -270,20 +299,6 @@ class SqlOperation {
         }
     }
 
-    public static function sortArray($array, $value){
-        $newArray=[];
-        while(sizeOf($array) > 0){
-            $n=0;
-            for($i=0;$i<count($array);$i++){
-                if($array[$i][$value] < $array[$n][$value]){
-                 $n = $i;
-                }
-            }
-            array_push($newArray,$array[$n]);
-            array_splice($array, $n, 1);
-        }
-        return $newArray;
-    }
 
     public function getUserContribution($userID, $projectID){
         if($userID == null){
@@ -297,12 +312,20 @@ class SqlOperation {
         }
     }
 
-    public function getUsersSupportedProjects($userID){
+     ##########################################################--- Utility Functions ---########################################################################
+
+
+    public static function sortArray($array, $value){
         $newArray=[];
-        $query = $this->db->prepare('SELECT project_ID FROM money_contributed WHERE user_ID = ?');
-        $query->execute(array($userID));
-        while($project = $query->fetch()){
-            array_push($newArray, $project);
+        while(sizeOf($array) > 0){
+            $n=0;
+            for($i=0;$i<count($array);$i++){
+                if($array[$i][$value] < $array[$n][$value]){
+                 $n = $i;
+                }
+            }
+            array_push($newArray,$array[$n]);
+            array_splice($array, $n, 1);
         }
         return $newArray;
     }

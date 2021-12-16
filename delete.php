@@ -17,8 +17,11 @@
     }
 
     if (isset($_POST['deletereward'])) {
+        $reward_id = $_GET['rewardid'];
+        $reward_row = $delete_sql->rewardInfo($reward_id);
+        $reward_project_id = $reward_row['project_ID'];
         $delete_sql->deleteReward($reward_id);
-        echo '<div class="alert alert-success" role="alert">Reward has been Deleted. <a href="project.php?projectid='.$reward_project_id.'">Return to Project</a></div>';
+        echo '<div class="alert alert-success" role="alert">Reward has been Deleted. <a href="project.php?projectid='.$_GET['projectid'].'">Return to Project</a></div>';
     }
 
 ?>
@@ -65,15 +68,15 @@
         } else if ($_GET['entity'] == "reward") {
             $reward_id = $_GET['rewardid'];
             $reward_row = $delete_sql->rewardInfo($reward_id);
-            $reward_project_id = $reward_row['project_ID'];
+            //$reward_project_id = $reward_row['project_ID'];
     ?>
         <div class="card" style="width: 30%;">
 			<form method="post">
 				<div class="card-body">
-					<h5 class="card-title">Deleting Your Shipping Address?</h5>
-					<p class="card-text">Are you sure you want to delete this address?</p>
+					<h5 class="card-title">Deleting Reward</h5>
+					<p class="card-text">Are you sure you want to delete this reward?</p>
 					<button type="button" class="btn btn-secondary">
-						<a href="project.php?projectid=<?php $reward_project_id ?>" style="text-decoration: none; color: white;">Cancel</a>
+						<a href="project.php?projectid=<?=$_GET['projectid']?>" style="text-decoration: none; color: white;">Cancel</a>
 					</button>
 					<button type="submit" class="btn btn-primary" name="deletereward">Delete</button>
 				</div>
@@ -82,13 +85,13 @@
     <?php
         } else if ($_GET['entity'] == "project") {
             $project_id = $_GET['projectid'];
-            $project_info = $delete_sql->projectInfo($project_id);
+            $project_info = $delete_sql->getProject($project_id);
     ?>
         <div class="card" style="width: 30%;">
 			<form method="post">
 				<div class="card-body">
 					<h5 class="card-title">Deleting Your Project?</h5>
-					<p class="card-text">Are you sure you want to delete <?php $project_info['project_name'] ?>?</p>
+					<p class="card-text">Are you sure you want to delete <?=$project_info['project_name'] ?>?</p>
 					<button type="button" class="btn btn-secondary">
 						<a href="project.php?projectid=<?php $project_id ?>" style="text-decoration: none; color: white;">Cancel</a>
 					</button>

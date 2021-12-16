@@ -147,8 +147,8 @@
                             $<?=$r['reward_price']?>
                         </button>
                         <?php if($_SESSION['admin'] == 1 && $_SESSION['userID']==$project['user_ID']){ ?>
-                        <button type="button" class="btn btn-info"><a href="modify.php?entity=reward" style="text-decoration: none; color: white;">Modify Reward</a></button>
-                        <button type="button" class="btn btn-danger"><a href="delete.php?entity=reward" style="text-decoration: none; color: white;">Delete Reward</a></button>
+                            <button type="button" class="btn btn-info"><a href="modify.php?entity=reward&rewardid=<?=$r['reward_ID']?>" style="text-decoration: none; color: white;">Modify Reward</a></button>
+                            <button type="button" class="btn btn-danger"><a href="delete.php?entity=reward&rewardid=<?=$r['reward_ID']?>&projectid=<?=$id?>" style="text-decoration: none; color: white;">Delete Reward</a></button>
                         <?php } ?>
                         <div class="modal" id="rewardDesc<?=$i?>">
                         <div class="modal-dialog">

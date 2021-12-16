@@ -110,12 +110,10 @@ $supportedProjects = $account_sql->getUsersSupportedProjects($_SESSION['userID']
                         <ul class="list-group list-group-flush">
                             <?php
                             foreach($supportedProjects as $p){
-                                $result = $db->prepare('SELECT project_name FROM projects WHERE project_ID = ?'); 
-                                $result->execute([$p['project_ID']]);
-                                $projectName = $result->fetch();
+                               $name = $account_sql->projectName($p['project_ID']);
                             ?>
                             <li class="list-group-item">
-                                <a href="projects.php?projectid=<?=$p['project_ID']?>"><?=$projectName['project_name']?></a>
+                                <a href="projects.php?projectid=<?=$p['project_ID']?>"><?=$name?></a>
                             </li>
                             <?php } ?>
                         </ul>
