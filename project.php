@@ -7,6 +7,7 @@
 
     $id = $_GET['projectid'];
 
+
     if (isset($_GET['contribute'])) {
         $_GET['contribute'] == 0;
     }

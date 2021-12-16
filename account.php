@@ -113,7 +113,7 @@ $supportedProjects = $account_sql->getUsersSupportedProjects($_SESSION['userID']
                                $name = $account_sql->projectName($p['project_ID']);
                             ?>
                             <li class="list-group-item">
-                                <a href="projects.php?projectid=<?=$p['project_ID']?>"><?=$name?></a>
+                                <a href="projects.php?projectid=<?=$p['project_ID']?>"><?=$name['project_name']?></a>
                             </li>
                             <?php } ?>
                         </ul>
