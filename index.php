@@ -15,6 +15,14 @@
 
     $index_query = $db->query('SELECT * FROM projects ORDER BY project_ID DESC LIMIT 3');
 
+    if (isset($_GET['projectname']) && strlen($_GET['projectname']) > 0 && $index_sql->containsProjectName($_GET['projectname']) == true) {
+        $searchterm = $_GET['projectname'];
+        $project_query = $db->prepare("SELECT project_ID FROM projects WHERE project_name = ?");
+        $project_query->execute([$searchterm]);
+        $result = $project_query->fetch();
+        header("Location: project.php?projectid=".$result['project_ID']);
+    }
+
 ?>
 
 <html lang="en">
@@ -151,18 +159,6 @@
       </form>
     </br>
     </br>
-    <?php
-    if (isset($_GET['projectname'])) {
-      $searchterm = $_GET['projectname'];
-      $project_query = $db->prepare("SELECT project_ID FROM projects WHERE project_name = '$searchterm'");
-      $project_query->execute();
-      $result = $project_query->fetch();
-      print_r($result);
-      header("Location: project.php?projectid=".$result['project_ID']);
-  }
-    else{
-
-  ?>
     <div class="card" style="width: 18rem;">
         <div class="card-header">
             Newest Projects
@@ -185,8 +181,6 @@
             ?>
         </ul>
     </div>
-  <?php }
-?>
 
       <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
       <script>

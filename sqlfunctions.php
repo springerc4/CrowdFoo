@@ -149,6 +149,17 @@ class SqlOperation {
         return $projectName;
     }
 
+    public function containsProjectName($name) {
+        $project_query = $this->db->prepare('SELECT * FROM projects WHERE project_name = ?');
+        $project_query->execute([$name]);
+        $project_row = $project_query->fetch();
+        if ($project_row) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public function modifyProject($name, $description, $goal, $project_id) {
         $modify_project = $this->db->prepare('UPDATE projects SET project_name = ?, project_description = ?, project_goal = ? WHERE project_ID = ?');
         $modify_project->execute([$name, $description, $goal, $project_id]);
@@ -268,9 +279,8 @@ class SqlOperation {
         $project_query = $this->db->prepare('SELECT money_collected FROM projects WHERE project_ID = ?');
         $project_query->execute([$project_id]);
         $money_row = $project_query->fetch();
-        $money_row['money_collected'] = $money_row['money_collected'] + $money_input;
         $new_money_query = $this->db->prepare('UPDATE projects SET money_collected = ? WHERE project_ID = ?');
-        $new_money_query->execute([$money_row['money_collected'], $project_id]);
+        $new_money_query->execute([$money_row['money_collected'] + $money_input, $project_id]);
     }
 
     public function newContributor($money_contributed, $user_id, $project_id) {
